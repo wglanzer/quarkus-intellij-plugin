@@ -5,6 +5,7 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
+import io.conceptive.quarkus.plugin.runconfig.settings.QuarkusSettings;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
 
@@ -20,12 +21,15 @@ public class QuarkusMavenRunConfig extends MavenRunConfiguration
 {
 
   private final int port;
+  private final QuarkusSettings settings;
   private final Consumer<ProcessHandler> onRdy;
   private final boolean attachDebugger;
 
-  public QuarkusMavenRunConfig(@NotNull Project project, @Nullable Integer pPort, @Nullable Consumer<ProcessHandler> pOnRdy)
+  public QuarkusMavenRunConfig(@NotNull Project project, @NotNull QuarkusSettings pSettings,
+                               @Nullable Integer pPort, @Nullable Consumer<ProcessHandler> pOnRdy)
   {
     super(project, MavenRunConfigurationType.getInstance().getConfigurationFactories()[0], "");
+    settings = pSettings;
     attachDebugger = pOnRdy != null && pPort != null;
     port = attachDebugger ? pPort : -1;
     onRdy = pOnRdy;
@@ -44,18 +48,21 @@ public class QuarkusMavenRunConfig extends MavenRunConfiguration
    * @return Parameters instance
    */
   @NotNull
-  JavaParameters createJavaParameters() throws ExecutionException //todo
+  JavaParameters createJavaParameters() throws ExecutionException
   {
-    MavenRunnerParameters params = new MavenRunnerParameters();
-    params.setWorkingDirPath(getProject().getBasePath());
+    MavenRunnerParameters params = settings.getMavenRunnerParameters().clone();
     params.setGoals(Arrays.asList("compile", "quarkus:dev"));
-    MavenRunnerSettings settings = new MavenRunnerSettings();
-    Map<String, String> props = new HashMap<>();
+
+    MavenRunnerSettings rsettings = settings.getMavenRunnerSettings().clone();
+    if(rsettings == null)
+      rsettings = MavenRunner.getInstance(getProject()).getState().clone();
+
+    Map<String, String> props = new HashMap<>(rsettings.getMavenProperties());
     if(attachDebugger)
       props.put("debug", String.valueOf(port));
-    settings.setPassParentEnv(true);
-    settings.setMavenProperties(props);
-    return MavenExternalParameters.createJavaParameters(getProject(), params, null, settings);
+    rsettings.setMavenProperties(props);
+
+    return MavenExternalParameters.createJavaParameters(getProject(), params, null, rsettings);
   }
 
 }
