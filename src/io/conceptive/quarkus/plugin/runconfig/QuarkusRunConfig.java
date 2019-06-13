@@ -1,5 +1,6 @@
 package io.conceptive.quarkus.plugin.runconfig;
 
+import com.intellij.configurationStore.XmlSerializer;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.executors.*;
@@ -9,10 +10,14 @@ import com.intellij.execution.runners.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.*;
 import io.conceptive.quarkus.plugin.runconfig.debugger.QuarkusDebugRunConfig;
 import io.conceptive.quarkus.plugin.runconfig.maven.QuarkusMavenRunConfig;
+import io.conceptive.quarkus.plugin.runconfig.settings.*;
 import io.conceptive.quarkus.plugin.util.NetUtility;
+import org.jdom.Element;
 import org.jetbrains.annotations.*;
+import org.jetbrains.idea.maven.execution.MavenRunnerParameters;
 
 import java.util.function.Consumer;
 
@@ -27,16 +32,40 @@ import java.util.function.Consumer;
 public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigurationModule> implements WithoutOwnBeforeRunSteps
 {
 
-  QuarkusRunConfig(@NotNull Project project, @NotNull ConfigurationFactory factory)
+  private QuarkusSettings mySettings;
+
+  QuarkusRunConfig(@NotNull Project pProject, @NotNull ConfigurationFactory factory)
   {
-    super(project, factory);
+    super(pProject, factory);
+    mySettings = new QuarkusSettings(pProject);
   }
 
   @NotNull
   @Override
-  public SettingsEditor<QuarkusRunConfig> getConfigurationEditor()
+  public SettingsEditor<? extends RunConfiguration> getConfigurationEditor()
   {
-    return new QuarkusSettingsEditor();
+    return new QuarkusSettingsEditor(getProject());
+  }
+
+  @Override
+  public void readExternal(@NotNull Element element) throws InvalidDataException
+  {
+    super.readExternal(element);
+
+    Element mavenSettingsElement = element.getChild(QuarkusSettings.TAG);
+    if (mavenSettingsElement != null)
+    {
+      mySettings = XmlSerializer.deserialize(mavenSettingsElement, QuarkusSettings.class);
+      if (mySettings.getMavenRunnerParameters() == null)
+        mySettings.setMavenRunnerParameters(new MavenRunnerParameters());
+    }
+  }
+
+  @Override
+  public void writeExternal(@NotNull Element element) throws WriteExternalException
+  {
+    super.writeExternal(element);
+    element.addContent(XmlSerializer.serialize(mySettings));
   }
 
   @Nullable
@@ -49,6 +78,19 @@ public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigur
       ApplicationManager.getApplication().invokeLater(() -> _startMavenConfiguration(runManager, port));
       return null;
     };
+  }
+
+  @Override
+  public RunConfiguration clone()
+  {
+    QuarkusRunConfig clone = (QuarkusRunConfig) super.clone();
+    clone.mySettings = mySettings.clone();
+    return clone;
+  }
+
+  public QuarkusSettings getMySettings()
+  {
+    return mySettings;
   }
 
   /**
@@ -64,10 +106,10 @@ public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigur
       onReady = (pMavenHandle) -> ApplicationManager.getApplication()
           .invokeLater(() -> _startDebugConfiguration(pRunManager, pMavenHandle, pPort));
 
-    QuarkusMavenRunConfig runConfig = new QuarkusMavenRunConfig(getProject(), pPort, onReady);
+    QuarkusMavenRunConfig runConfig = new QuarkusMavenRunConfig(getProject(), mySettings, pPort, onReady);
 
     // Define new displayname
-    if(pPort != null)
+    if (pPort != null)
       runConfig.setName("Maven - " + getName());
     else
       runConfig.setName(getName());
