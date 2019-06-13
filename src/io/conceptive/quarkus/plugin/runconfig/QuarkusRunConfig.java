@@ -67,7 +67,10 @@ public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigur
     QuarkusMavenRunConfig runConfig = new QuarkusMavenRunConfig(getProject(), pPort, onReady);
 
     // Define new displayname
-    runConfig.setName("Maven - " + getName());
+    if(pPort != null)
+      runConfig.setName("Maven - " + getName());
+    else
+      runConfig.setName(getName());
 
     // Execute
     ExecutionUtil.runConfiguration(new RunnerAndConfigurationSettingsImpl(pRunManager, runConfig), DefaultRunExecutor.getRunExecutorInstance());
@@ -85,7 +88,7 @@ public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigur
     QuarkusDebugRunConfig runConfig = new QuarkusDebugRunConfig(getProject(), pMavenHandle, pPort);
 
     // Define new displayname
-    runConfig.setName("Debug - " + getName());
+    runConfig.setName(getName());
 
     // Execute
     ExecutionUtil.runConfiguration(new RunnerAndConfigurationSettingsImpl(pRunManager, runConfig), DefaultDebugExecutor.getDebugExecutorInstance());
