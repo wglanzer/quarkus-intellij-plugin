@@ -23,12 +23,12 @@ public class QuarkusMavenRunConfig extends MavenRunConfiguration
   private final Consumer<ProcessHandler> onRdy;
   private final boolean attachDebugger;
 
-  public QuarkusMavenRunConfig(@NotNull Project project, int pPort, @Nullable Consumer<ProcessHandler> pOnRdy)
+  public QuarkusMavenRunConfig(@NotNull Project project, @Nullable Integer pPort, @Nullable Consumer<ProcessHandler> pOnRdy)
   {
     super(project, MavenRunConfigurationType.getInstance().getConfigurationFactories()[0], "");
-    port = pPort;
+    attachDebugger = pOnRdy != null && pPort != null;
+    port = attachDebugger ? pPort : -1;
     onRdy = pOnRdy;
-    attachDebugger = onRdy != null;
   }
 
   @Nullable
