@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  *
  * @author w.glanzer, 12.06.2019
  */
-public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigurationModule>
+public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigurationModule> implements WithoutOwnBeforeRunSteps
 {
 
   QuarkusRunConfig(@NotNull Project project, @NotNull ConfigurationFactory factory)
