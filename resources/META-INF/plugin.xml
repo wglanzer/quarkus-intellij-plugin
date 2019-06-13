@@ -1,12 +1,13 @@
 <idea-plugin>
-  <id>io.conceptive.quarkus.plugin</id>
-  <name>Quarkus</name>
-  <version>1.0</version>
-  <vendor email="info@conceptive.io">con.ceptive solutions e.K.</vendor>
+  <id>io.conceptive.quarkus.integration</id>
+  <name>Quarkus Integration</name>
+  <version>0.1.1</version>
+  <vendor email="w.glanzer@conceptive.io">Werner Glanzer</vendor>
 
   <description><![CDATA[
-      Enter short descrissption for your plugin here.<br>
-      <em>most HTML tasssgs may be used</em>
+      This plugin provides a simple integration for Quarkus ( <a href="http://quarkus.io">http://quarkus.io</a> ) development.
+      It provides a simple way to execute the quarkus maven goal via run configuration.
+      If you want to debug your quarkus instance, it will add the "-Ddebug" parameter and attaches a remote debugger on a random port.
     ]]></description>
 
   <idea-version since-build="173.0"/>
