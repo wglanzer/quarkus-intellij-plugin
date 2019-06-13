@@ -51,7 +51,7 @@ public class QuarkusMavenRunConfig extends MavenRunConfiguration
   JavaParameters createJavaParameters() throws ExecutionException
   {
     MavenRunnerParameters params = settings.getMavenRunnerParameters().clone();
-    params.setGoals(Arrays.asList("compile", "quarkus:dev"));
+    params.setGoals(Arrays.asList("clean", "compile", "quarkus:dev"));
 
     MavenRunnerSettings rsettings = settings.getMavenRunnerSettings().clone();
     if(rsettings == null)
