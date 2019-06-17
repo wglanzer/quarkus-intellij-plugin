@@ -20,15 +20,25 @@ import java.util.function.Consumer;
 public class QuarkusMavenRunConfig extends MavenRunConfiguration
 {
 
-  private final int port;
-  private final QuarkusSettings settings;
-  private final Consumer<ProcessHandler> onRdy;
-  private final boolean attachDebugger;
+  private int port;
+  private QuarkusSettings settings;
+  private Consumer<ProcessHandler> onRdy;
+  private boolean attachDebugger;
 
-  public QuarkusMavenRunConfig(@NotNull Project project, @NotNull QuarkusSettings pSettings,
-                               @Nullable Integer pPort, @Nullable Consumer<ProcessHandler> pOnRdy)
+  public QuarkusMavenRunConfig(@NotNull Project project)
   {
     super(project, MavenRunConfigurationType.getInstance().getConfigurationFactories()[0], "");
+  }
+
+  /**
+   * Reinitializes this RunConfig with new settings
+   *
+   * @param pSettings Settings
+   * @param pPort     Debug-Port
+   * @param pOnRdy    Consumer which handles ready-Events
+   */
+  public void reinit(@NotNull QuarkusSettings pSettings, @Nullable Integer pPort, @Nullable Consumer<ProcessHandler> pOnRdy)
+  {
     settings = pSettings;
     attachDebugger = pOnRdy != null && pPort != null;
     port = attachDebugger ? pPort : -1;

@@ -21,14 +21,24 @@ public class QuarkusDebugRunConfig extends RemoteConfiguration
 
   private ProcessHandler mavenProcessHandler;
 
-  public QuarkusDebugRunConfig(@NotNull Project project, @Nullable ProcessHandler pMavenProcessHandler, int pPort)
+  public QuarkusDebugRunConfig(@NotNull Project project)
   {
     super(project, new RemoteConfigurationType());
-    mavenProcessHandler = pMavenProcessHandler;
-    PORT = String.valueOf(pPort);
     HOST = "localhost";
     USE_SOCKET_TRANSPORT = true;
     SERVER_MODE = false;
+  }
+
+  /**
+   * Reinitializes this RunConfig with new settings
+   *
+   * @param pMavenProcessHandler ProcessHandler for the Maven Process
+   * @param pPort                Debug-Port
+   */
+  public void reinit(@Nullable ProcessHandler pMavenProcessHandler, int pPort)
+  {
+    mavenProcessHandler = pMavenProcessHandler;
+    PORT = String.valueOf(pPort);
   }
 
   @Override

@@ -1,7 +1,7 @@
 package io.conceptive.quarkus.plugin.runconfig;
 
 import com.intellij.configurationStore.XmlSerializer;
-import com.intellij.execution.Executor;
+import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.executors.*;
 import com.intellij.execution.impl.*;
@@ -32,6 +32,10 @@ import java.util.function.Consumer;
 public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigurationModule> implements WithoutOwnBeforeRunSteps
 {
 
+  private QuarkusDebugRunConfig debugRunConfig;
+  private RunnerAndConfigurationSettings debugRunConfigSettings;
+  private QuarkusMavenRunConfig mavenRunConfig;
+  private RunnerAndConfigurationSettings mavenRunConfigSettings;
   private QuarkusSettings mySettings;
 
   QuarkusRunConfig(@NotNull Project pProject, @NotNull ConfigurationFactory factory)
@@ -99,23 +103,26 @@ public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigur
    * @param pRunManager RunManager to run RunConfigs in it
    * @param pPort       Port to be used for debugging. NULL if no debugger should be attached
    */
-  private void _startMavenConfiguration(@NotNull RunManagerImpl pRunManager, @Nullable Integer pPort)
+  private synchronized void _startMavenConfiguration(@NotNull RunManagerImpl pRunManager, @Nullable Integer pPort)
   {
     Consumer<ProcessHandler> onReady = null;
     if (pPort != null)
       onReady = (pMavenHandle) -> ApplicationManager.getApplication()
           .invokeLater(() -> _startDebugConfiguration(pRunManager, pMavenHandle, pPort));
 
-    QuarkusMavenRunConfig runConfig = new QuarkusMavenRunConfig(getProject(), mySettings, pPort, onReady);
+    if(mavenRunConfig == null)
+    {
+      mavenRunConfig = new QuarkusMavenRunConfig(getProject());
+      mavenRunConfig.setName(pPort != null ? "Maven - " + getName() : getName());
+    }
 
-    // Define new displayname
-    if (pPort != null)
-      runConfig.setName("Maven - " + getName());
-    else
-      runConfig.setName(getName());
+    mavenRunConfig.reinit(mySettings, pPort, onReady);
 
     // Execute
-    ExecutionUtil.runConfiguration(new RunnerAndConfigurationSettingsImpl(pRunManager, runConfig), DefaultRunExecutor.getRunExecutorInstance());
+    if(mavenRunConfigSettings == null)
+      mavenRunConfigSettings = new RunnerAndConfigurationSettingsImpl(pRunManager, mavenRunConfig);
+
+    ExecutionUtil.runConfiguration(mavenRunConfigSettings, DefaultRunExecutor.getRunExecutorInstance());
   }
 
   /**
@@ -125,15 +132,21 @@ public class QuarkusRunConfig extends LocatableConfigurationBase<JavaRunConfigur
    * @param pMavenHandle ProcessHandle for the running maven instance
    * @param pPort        Debugger Port
    */
-  private void _startDebugConfiguration(@NotNull RunManagerImpl pRunManager, @NotNull ProcessHandler pMavenHandle, int pPort)
+  private synchronized void _startDebugConfiguration(@NotNull RunManagerImpl pRunManager, @NotNull ProcessHandler pMavenHandle, int pPort)
   {
-    QuarkusDebugRunConfig runConfig = new QuarkusDebugRunConfig(getProject(), pMavenHandle, pPort);
+    if(debugRunConfig == null)
+    {
+      debugRunConfig = new QuarkusDebugRunConfig(getProject());
+      debugRunConfig.setName(getName());
+    }
 
-    // Define new displayname
-    runConfig.setName(getName());
+    debugRunConfig.reinit(pMavenHandle, pPort);
 
     // Execute
-    ExecutionUtil.runConfiguration(new RunnerAndConfigurationSettingsImpl(pRunManager, runConfig), DefaultDebugExecutor.getDebugExecutorInstance());
+    if(debugRunConfigSettings == null)
+      debugRunConfigSettings = new RunnerAndConfigurationSettingsImpl(pRunManager, debugRunConfig);
+
+    ExecutionUtil.runConfiguration(debugRunConfigSettings, DefaultDebugExecutor.getDebugExecutorInstance());
   }
 
 }
