@@ -1,0 +1,19 @@
+# Common
+/.idea/*
+!/.idea/codeStyleSettings.xml
+!/.idea/projectCodeStyle.xml
+!/.idea/runConfigurations
+!/.idea/misc.xml
+!/.idea/vcs.xml
+.local
+target
+out
+*.iml
+
+# Gradle
+.gradle
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
