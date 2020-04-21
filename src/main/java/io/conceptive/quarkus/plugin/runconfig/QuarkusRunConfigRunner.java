@@ -1,8 +1,10 @@
 package io.conceptive.quarkus.plugin.runconfig;
 
+import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
-import com.intellij.execution.runners.GenericProgramRunner;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.execution.runners.*;
+import com.intellij.execution.ui.RunContentDescriptor;
+import org.jetbrains.annotations.*;
 
 /**
  * DefaultProgramRunner for Quarkus-Instances.
@@ -31,4 +33,13 @@ public class QuarkusRunConfigRunner extends GenericProgramRunner<RunnerSettings>
     return false;
   }
 
+  @Nullable
+  @Override
+  protected RunContentDescriptor doExecute(@NotNull RunProfileState pState, @NotNull ExecutionEnvironment pEnv) throws ExecutionException
+  {
+    ExecutionResult result = pState.execute(pEnv.getExecutor(), this);
+    if (result == null)
+      return null;
+    return new RunContentBuilder(result, pEnv).showRunContent(pEnv.getContentToReuse());
+  }
 }
