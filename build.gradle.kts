@@ -12,7 +12,7 @@ repositories {
 }
 
 intellij {
-    pluginName = "Quarkus Integration"
+    pluginName = "QuarkusIntegration"
     version = "2020.1"
     updateSinceUntilBuild = false
     setPlugins("maven", "java")
