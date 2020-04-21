@@ -9,6 +9,8 @@ import io.conceptive.quarkus.plugin.runconfig.factory.IRunConfigFactory;
 import io.conceptive.quarkus.plugin.runconfig.options.QuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 
+import javax.swing.*;
+
 /**
  * RunConfigType for QuarkusRunConfig
  *
@@ -17,13 +19,14 @@ import org.jetbrains.annotations.*;
 public class QuarkusRunConfigType extends SimpleConfigurationType
 {
 
+  public static final Icon ICON = IconLoader.getIcon("/io/conceptive/quarkus/plugin/quarkus_logo.svg");
   private static final String _ID = "QuarkusMavenBridge";
   private static final String _NAME = "Quarkus";
   private static final Injector _INJECTOR = Guice.createInjector(new QuarkusRunConfigModule());
 
   protected QuarkusRunConfigType()
   {
-    super(_ID, _NAME, null, NotNullLazyValue.createValue(() -> IconLoader.getIcon("/io/conceptive/quarkus/plugin/quarkus_logo.svg")));
+    super(_ID, _NAME, null, NotNullLazyValue.createValue(() -> ICON));
   }
 
   @NotNull

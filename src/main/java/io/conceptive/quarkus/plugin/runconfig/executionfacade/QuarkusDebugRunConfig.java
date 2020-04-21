@@ -8,8 +8,11 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.remote.*;
 import com.intellij.execution.runners.*;
 import com.intellij.openapi.project.Project;
+import io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigType;
 import io.conceptive.quarkus.plugin.util.ForwardProcessListener;
 import org.jetbrains.annotations.*;
+
+import javax.swing.*;
 
 /**
  * Part II: Connect debugger to started Quarkus instance
@@ -27,6 +30,13 @@ class QuarkusDebugRunConfig extends RemoteConfiguration
     HOST = "localhost";
     USE_SOCKET_TRANSPORT = true;
     SERVER_MODE = false;
+  }
+
+  @Nullable
+  @Override
+  public Icon getIcon()
+  {
+    return QuarkusRunConfigType.ICON;
   }
 
   /**

@@ -5,10 +5,12 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
+import io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigType;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -28,6 +30,13 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
   public QuarkusMavenRunConfig(@NotNull Project project)
   {
     super(project, MavenRunConfigurationType.getInstance().getConfigurationFactories()[0], "");
+  }
+
+  @Nullable
+  @Override
+  public Icon getIcon()
+  {
+    return QuarkusRunConfigType.ICON;
   }
 
   @Nullable
