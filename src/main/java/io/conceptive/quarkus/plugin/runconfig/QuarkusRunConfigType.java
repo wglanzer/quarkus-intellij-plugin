@@ -43,4 +43,11 @@ public class QuarkusRunConfigType extends SimpleConfigurationType
     return QuarkusRunConfigurationOptions.class;
   }
 
+  @NotNull
+  @Override
+  public RunConfigurationSingletonPolicy getSingletonPolicy()
+  {
+    return RunConfigurationSingletonPolicy.SINGLE_INSTANCE_ONLY;
+  }
+
 }
