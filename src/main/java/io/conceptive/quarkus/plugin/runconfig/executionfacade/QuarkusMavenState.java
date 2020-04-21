@@ -43,20 +43,26 @@ class QuarkusMavenState extends JavaCommandLineState
   @Override
   public ExecutionResult execute(@NotNull Executor executor, @NotNull ProgramRunner runner) throws ExecutionException
   {
-    ProcessHandler processHandler = startProcess();
+    _ProcessHandler processHandler = startProcess();
     ConsoleView console = createConsole(executor);
     if (console != null)
       console.attachToProcess(processHandler);
-    if (attachDebugger)
-      processHandler.addProcessListener(new _StartDebuggerListener(processHandler, console, onReady));
+    processHandler.addProcessListener(new _StartDebuggerListener(processHandler, pHandler -> {
+      if (attachDebugger)
+        processHandler.detachProcessSilently();
+
+      // Delegate Handler
+      if (onReady != null)
+        onReady.accept(pHandler);
+    }));
     return new DefaultExecutionResult(console, processHandler);
   }
 
   @NotNull
   @Override
-  protected OSProcessHandler startProcess() throws ExecutionException
+  protected _ProcessHandler startProcess() throws ExecutionException
   {
-    OSProcessHandler result = new _ProcessHandler(createCommandLine());
+    _ProcessHandler result = new _ProcessHandler(createCommandLine());
     result.setShouldDestroyProcessRecursively(true);
     return result;
   }
@@ -67,13 +73,11 @@ class QuarkusMavenState extends JavaCommandLineState
   private static class _StartDebuggerListener extends ProcessAdapter
   {
     private final ProcessHandler processHandler;
-    private final ConsoleView console;
     private final Consumer<ProcessHandler> onReady;
 
-    private _StartDebuggerListener(ProcessHandler pProcessHandler, ConsoleView pConsole, Consumer<ProcessHandler> pOnReady)
+    private _StartDebuggerListener(ProcessHandler pProcessHandler, Consumer<ProcessHandler> pOnReady)
     {
       processHandler = pProcessHandler;
-      console = pConsole;
       onReady = pOnReady;
     }
 
@@ -84,8 +88,6 @@ class QuarkusMavenState extends JavaCommandLineState
       if (text != null && text.startsWith(_DEBUGGER_READY_STRING))
       {
         processHandler.removeProcessListener(this);
-        if (console != null)
-          console.setOutputPaused(true);
         if (onReady != null)
           onReady.accept(processHandler);
       }
@@ -102,6 +104,23 @@ class QuarkusMavenState extends JavaCommandLineState
     private _ProcessHandler(@NotNull GeneralCommandLine pCmdLine) throws ExecutionException
     {
       super(pCmdLine);
+    }
+
+    @Override
+    public void destroyProcess()
+    {
+      // Skip destroyProcess checks, because this handler is ... not really dead (if detachProcessSilently called)
+      executeTask(this::destroyProcessImpl);
+    }
+
+    /**
+     * This method just calls the listeners so that all objects are thinking this process handler has detatched.
+     * This will update the GUI and closes the ToolWindow-Content.
+     * Do not really detach - we have to destroy the process later on, if the remote state has been killed!
+     */
+    protected void detachProcessSilently()
+    {
+      executeTask(this::notifyProcessDetached);
     }
 
     @NotNull
