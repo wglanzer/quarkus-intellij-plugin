@@ -7,7 +7,7 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.options.SettingsEditor;
+import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.Project;
 import io.conceptive.quarkus.plugin.runconfig.executionfacade.IRunConfigExecutionFacade;
 import io.conceptive.quarkus.plugin.runconfig.options.QuarkusRunConfigurationOptions;
@@ -15,7 +15,7 @@ import io.conceptive.quarkus.plugin.util.NetUtility;
 import org.jetbrains.annotations.*;
 
 /**
- * Provides implementation for intellijs RunConfigurationBase
+ * Provides implementation for intellijs RunConfigurationBase.
  *
  * @author w.glanzer, 12.06.2019
  */
@@ -24,9 +24,6 @@ class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule> imp
 
   @Inject
   private IRunConfigExecutionFacade executionFacade;
-
-  @Inject
-  private RunConfigEditor.Factory editorFactory;
 
   @Inject
   RunConfigImpl(@Assisted @NotNull Project pProject, @Assisted @NotNull ConfigurationFactory pConfigurationFactory)
@@ -38,7 +35,9 @@ class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule> imp
   @Override
   public SettingsEditor<? extends RunConfiguration> getConfigurationEditor()
   {
-    return editorFactory.create();
+    SettingsEditorGroup<RunConfigImpl> group = new SettingsEditorGroup<>();
+    group.addEditor("Parameters", new ParametersSettingsEditorImpl(getProject()));
+    return group;
   }
 
   @Nullable

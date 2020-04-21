@@ -5,6 +5,7 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
+import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
 
@@ -22,6 +23,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
   private int port;
   private Consumer<ProcessHandler> onRdy;
   private boolean attachDebugger;
+  private IQuarkusRunConfigurationOptions options;
 
   public QuarkusMavenRunConfig(@NotNull Project project)
   {
@@ -41,10 +43,11 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
    * @param pPort  Debug-Port
    * @param pOnRdy Consumer which handles ready-Events
    */
-  public void reinit(@Nullable Integer pPort, @Nullable Consumer<ProcessHandler> pOnRdy)
+  public void reinit(@Nullable Integer pPort, @NotNull IQuarkusRunConfigurationOptions pOptions, @Nullable Consumer<ProcessHandler> pOnRdy)
   {
     attachDebugger = pOnRdy != null && pPort != null;
     port = attachDebugger ? pPort : -1;
+    options = pOptions;
     onRdy = pOnRdy;
   }
 
@@ -58,6 +61,10 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
   {
     MavenRunnerParameters params = new MavenRunnerParameters();
     params.setGoals(Arrays.asList("clean", "compile", "quarkus:dev"));
+
+    String workingDir = options.getWorkingDir();
+    if (workingDir != null)
+      params.setWorkingDirPath(workingDir);
 
     MavenRunnerSettings rsettings = MavenRunner.getInstance(getProject()).getState().clone();
 

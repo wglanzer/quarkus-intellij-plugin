@@ -1,5 +1,7 @@
 package io.conceptive.quarkus.plugin.runconfig.options;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Information about all set options in a single run configuration
  *
@@ -7,4 +9,6 @@ package io.conceptive.quarkus.plugin.runconfig.options;
  */
 public interface IQuarkusRunConfigurationOptions
 {
+  @Nullable
+  String getWorkingDir();
 }

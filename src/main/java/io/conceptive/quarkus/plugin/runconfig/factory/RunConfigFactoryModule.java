@@ -16,8 +16,6 @@ public class RunConfigFactoryModule extends AbstractModule
     install(new FactoryModuleBuilder()
                 .implement(RunConfiguration.class, RunConfigImpl.class)
                 .build(IRunConfigFactory.class));
-    install(new FactoryModuleBuilder()
-                .build(RunConfigEditor.Factory.class));
   }
 
 }

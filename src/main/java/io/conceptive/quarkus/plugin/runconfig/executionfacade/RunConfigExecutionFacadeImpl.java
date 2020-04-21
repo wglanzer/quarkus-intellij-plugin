@@ -22,7 +22,7 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
     if (mavenRunConfig == null)
       mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
     mavenRunConfig.setName(pSource.getName());
-    mavenRunConfig.reinit(null, null);
+    mavenRunConfig.reinit(null, pOptions, null);
     ExecutionUtility.execute(pSource.getProject(), mavenRunConfig, false);
   }
 
@@ -33,7 +33,7 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
       mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
     mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
     mavenRunConfig.setName(pSource.getName());
-    mavenRunConfig.reinit(pDebugPort, (pMavenHandle) -> ApplicationManager.getApplication().invokeLater(() -> {
+    mavenRunConfig.reinit(pDebugPort, pOptions, (pMavenHandle) -> ApplicationManager.getApplication().invokeLater(() -> {
       if (debugRunConfig == null)
         debugRunConfig = new QuarkusDebugRunConfig(pSource.getProject());
       debugRunConfig.setName(pSource.getName());
