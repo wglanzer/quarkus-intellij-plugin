@@ -11,6 +11,7 @@ import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
 
 import javax.swing.*;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -26,6 +27,8 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
   private Consumer<ProcessHandler> onRdy;
   private boolean attachDebugger;
   private IQuarkusRunConfigurationOptions options;
+  private WeakReference<RunProfileState> stateRef = null;
+  private Runnable onRestart;
 
   public QuarkusMavenRunConfig(@NotNull Project project)
   {
@@ -43,7 +46,17 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
   @Override
   public RunProfileState getState(@NotNull Executor pExecutor, @NotNull ExecutionEnvironment pExecutionEnvironment)
   {
-    return new QuarkusMavenState(this, pExecutionEnvironment, attachDebugger, onRdy);
+    // Rerun is not supported - it has to be initialized again
+    if (stateRef != null && stateRef.get() != null)
+    {
+      if (onRestart != null)
+        onRestart.run();
+      return null;
+    }
+
+    QuarkusMavenState state = new QuarkusMavenState(this, pExecutionEnvironment, attachDebugger, onRdy);
+    stateRef = new WeakReference<>(state);
+    return state;
   }
 
   /**
@@ -52,12 +65,13 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
    * @param pPort  Debug-Port
    * @param pOnRdy Consumer which handles ready-Events
    */
-  public void reinit(@Nullable Integer pPort, @NotNull IQuarkusRunConfigurationOptions pOptions, @Nullable Consumer<ProcessHandler> pOnRdy)
+  public void reinit(@Nullable Integer pPort, @NotNull IQuarkusRunConfigurationOptions pOptions, @Nullable Consumer<ProcessHandler> pOnRdy, @Nullable Runnable pOnRestart)
   {
     attachDebugger = pOnRdy != null && pPort != null;
     port = attachDebugger ? pPort : -1;
     options = pOptions;
     onRdy = pOnRdy;
+    onRestart = pOnRestart;
   }
 
   /**

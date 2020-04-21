@@ -22,7 +22,7 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
     if (mavenRunConfig == null)
       mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
     mavenRunConfig.setName(pSource.getName());
-    mavenRunConfig.reinit(null, pOptions, null);
+    mavenRunConfig.reinit(null, pOptions, null, () -> _rerun(pSource, false));
     ExecutionUtility.execute(pSource.getProject(), mavenRunConfig, false);
   }
 
@@ -37,10 +37,21 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
       if (debugRunConfig == null)
         debugRunConfig = new QuarkusDebugRunConfig(pSource.getProject());
       debugRunConfig.setName(pSource.getName());
-      debugRunConfig.reinit(pMavenHandle, pDebugPort);
+      debugRunConfig.reinit(pMavenHandle, pDebugPort, () -> _rerun(pSource, true));
       ExecutionUtility.execute(pSource.getProject(), debugRunConfig, true);
-    }));
+    }), () -> _rerun(pSource, true));
     ExecutionUtility.execute(pSource.getProject(), mavenRunConfig, true);
+  }
+
+  /**
+   * Reruns the given RunConfiguration
+   *
+   * @param pSource RunConfiguration
+   * @param pDebug  true, if it should be run in debug mode
+   */
+  private void _rerun(@NotNull RunConfiguration pSource, boolean pDebug)
+  {
+    ExecutionUtility.execute(pSource.getProject(), pSource, pDebug);
   }
 
 }
