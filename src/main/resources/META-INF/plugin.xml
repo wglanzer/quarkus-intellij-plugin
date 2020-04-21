@@ -10,11 +10,12 @@
       If you want to debug your quarkus instance, it will add the "-Ddebug" parameter and attaches a remote debugger on a random port.
     ]]></description>
 
-    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.idea.maven</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <programRunner implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigRunner"/>
+        <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigType"/>
     </extensions>
 
 </idea-plugin>
