@@ -8,10 +8,12 @@ import com.intellij.execution.remote.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
 import io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigType;
+import org.jdom.Element;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 
 /**
  * Part II: Connect debugger to started Quarkus instance
@@ -51,6 +53,10 @@ class QuarkusDebugRunConfig extends RemoteConfiguration
       return null;
     }
 
+    // prepare environment
+    _preventSettingsFromBeingSavedToDisk(env);
+
+    // those settings have to be set, so that the runner is able to run correctly
     GenericDebuggerRunnerSettings debuggerSettings = (GenericDebuggerRunnerSettings) env.getRunnerSettings();
     if (debuggerSettings != null)
     {
@@ -77,6 +83,40 @@ class QuarkusDebugRunConfig extends RemoteConfiguration
     onRestart = pOnRestart;
     PORT = String.valueOf(pPort);
     stateRef = null;
+  }
+
+  /**
+   * If something gets set in the execution environments GenericDebuggerRunnerSettings, it will persisted to disk.
+   * This is normally okay, because the user did those changes - here it is definitely not okay, because the user has changed nothing!
+   * Especially the behaviour for "Random Ports" is ... bad, if it gets changed every run
+   *
+   * @param pEnvironment Environment to be prevented
+   */
+  private void _preventSettingsFromBeingSavedToDisk(@NotNull ExecutionEnvironment pEnvironment)
+  {
+    try
+    {
+      Field field = ExecutionEnvironment.class.getDeclaredField("myRunnerSettings");
+      field.setAccessible(true);
+      field.set(pEnvironment, new GenericDebuggerRunnerSettings()
+      {
+        @Override
+        public void readExternal(Element element)
+        {
+          // nothing, do not change here
+        }
+
+        @Override
+        public void writeExternal(Element element)
+        {
+          // nothing, to prevent writing
+        }
+      });
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException("_preventSettingsFromBeingSavedToDisk does not work anymore", e);
+    }
   }
 
 }
