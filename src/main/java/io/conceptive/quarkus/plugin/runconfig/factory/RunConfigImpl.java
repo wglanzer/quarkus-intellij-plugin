@@ -19,7 +19,7 @@ import org.jetbrains.annotations.*;
  *
  * @author w.glanzer, 12.06.2019
  */
-class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule> implements WithoutOwnBeforeRunSteps
+class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule>
 {
 
   @Inject
