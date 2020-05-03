@@ -4,6 +4,9 @@ import com.google.common.base.Strings;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.*;
 import com.intellij.ui.RawCommandLineEditor;
 import org.jetbrains.annotations.*;
@@ -23,6 +26,8 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
 
   private final _WorkingDirectoryComponent workingDirComponent;
   private final LabeledComponent<RawCommandLineEditor> vmOptions;
+  private final LabeledComponent<JdkComboBox> jre;
+  private final ProjectSdksModel projectSdksModel;
 
   public ParametersSettingsEditorImpl(@NotNull Project pProject)
   {
@@ -31,6 +36,12 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     vmOptions.setComponent(new RawCommandLineEditor());
     vmOptions.setLabelLocation(BorderLayout.WEST);
     vmOptions.setText("VM Options");
+    projectSdksModel = new ProjectSdksModel();
+    projectSdksModel.syncSdks();
+    jre = new LabeledComponent<>();
+    jre.setComponent(new JdkComboBox(pProject, projectSdksModel, null, null, null, null));
+    jre.setLabelLocation(BorderLayout.WEST);
+    jre.setText("JRE");
   }
 
   @Override
@@ -38,6 +49,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
   {
     workingDirComponent.setValue(Strings.nullToEmpty(pImpl.getOptions().getWorkingDir()));
     vmOptions.getComponent().setText(Strings.nullToEmpty(pImpl.getOptions().getVmOptions()));
+    jre.getComponent().setSelectedItem(projectSdksModel.findSdk(Strings.nullToEmpty(pImpl.getOptions().getJRE())));
   }
 
   @Override
@@ -45,6 +57,9 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
   {
     pImpl.getOptions().setWorkingDir(workingDirComponent.getValue());
     pImpl.getOptions().setVmOptions(vmOptions.getComponent().getText());
+    Sdk selectedJDK = jre.getComponent().getSelectedJdk();
+    if (selectedJDK != null)
+      pImpl.getOptions().setJRE(selectedJDK.getName());
   }
 
   @NotNull
@@ -56,6 +71,8 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     panel.add(workingDirComponent);
     panel.add(Box.createVerticalStrut(4));
     panel.add(vmOptions);
+    panel.add(Box.createVerticalStrut(4));
+    panel.add(jre);
     return panel;
   }
 
