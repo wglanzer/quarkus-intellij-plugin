@@ -1,5 +1,6 @@
 package io.conceptive.quarkus.plugin.runconfig.executionfacade;
 
+import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public interface IRunConfigExecutionFacade
    * @param pSource  Source-Config
    * @param pOptions Execution Options
    */
-  void executeNestedMavenRunConfig(@NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions);
+  void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions);
 
   /**
    * Executes the nested maven run config and attaches debugger when possible
@@ -27,6 +28,6 @@ public interface IRunConfigExecutionFacade
    * @param pOptions   Execution Options
    * @param pDebugPort Port for Debugger
    */
-  void executeNestedMavenRunConfig(@NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions, @NotNull Integer pDebugPort);
+  void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions, @NotNull Integer pDebugPort);
 
 }

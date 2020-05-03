@@ -1,9 +1,12 @@
 package io.conceptive.quarkus.plugin.runconfig.executionfacade;
 
+import com.intellij.execution.*;
 import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.execution.executors.*;
+import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
+import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.application.ApplicationManager;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
-import io.conceptive.quarkus.plugin.util.ExecutionUtility;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,17 +20,18 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
   private QuarkusDebugRunConfig debugRunConfig;
 
   @Override
-  public synchronized void executeNestedMavenRunConfig(@NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions)
+  public synchronized void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions)
   {
     if (mavenRunConfig == null)
       mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
     mavenRunConfig.setName(pSource.getName());
-    mavenRunConfig.reinit(null, pOptions, null, () -> _rerun(pSource, false));
-    ExecutionUtility.execute(pSource.getProject(), mavenRunConfig, false);
+    mavenRunConfig.reinit(null, pOptions, null, () -> ExecutionUtil.runConfiguration(pSettings, DefaultRunExecutor.getRunExecutorInstance()));
+    execute(pSettings, mavenRunConfig, DefaultRunExecutor.getRunExecutorInstance());
   }
 
   @Override
-  public synchronized void executeNestedMavenRunConfig(@NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions, @NotNull Integer pDebugPort)
+  public synchronized void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions,
+                                                       @NotNull Integer pDebugPort)
   {
     if (mavenRunConfig == null)
       mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
@@ -37,21 +41,30 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
       if (debugRunConfig == null)
         debugRunConfig = new QuarkusDebugRunConfig(pSource.getProject());
       debugRunConfig.setName(pSource.getName());
-      debugRunConfig.reinit(pMavenHandle, pDebugPort, () -> _rerun(pSource, true));
-      ExecutionUtility.execute(pSource.getProject(), debugRunConfig, true);
-    }), () -> _rerun(pSource, true));
-    ExecutionUtility.execute(pSource.getProject(), mavenRunConfig, true);
+      debugRunConfig.reinit(pMavenHandle, pDebugPort, () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
+      execute(pSettings, debugRunConfig, DefaultDebugExecutor.getDebugExecutorInstance());
+    }), () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
+    execute(pSettings, mavenRunConfig, DefaultDebugExecutor.getDebugExecutorInstance());
   }
 
   /**
-   * Reruns the given RunConfiguration
-   *
-   * @param pSource RunConfiguration
-   * @param pDebug  true, if it should be run in debug mode
+   * Executes the given runconfig in a project
    */
-  private void _rerun(@NotNull RunConfiguration pSource, boolean pDebug)
+  private static void execute(@NotNull RunnerAndConfigurationSettings pSourceSettings, @NotNull RunConfiguration pConfig, Executor pExecutor)
   {
-    ExecutionUtility.execute(pSource.getProject(), pSource, pDebug);
+    RunConfiguration config = pSourceSettings.getConfiguration();
+
+    try
+    {
+      if (pSourceSettings instanceof RunnerAndConfigurationSettingsImpl)
+        ((RunnerAndConfigurationSettingsImpl) pSourceSettings).setConfiguration(pConfig);
+      ExecutionUtil.runConfiguration(pSourceSettings, pExecutor);
+    }
+    finally
+    {
+      if (pSourceSettings instanceof RunnerAndConfigurationSettingsImpl)
+        ((RunnerAndConfigurationSettingsImpl) pSourceSettings).setConfiguration(config);
+    }
   }
 
 }

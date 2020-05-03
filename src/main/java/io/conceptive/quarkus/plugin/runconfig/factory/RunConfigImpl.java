@@ -2,7 +2,7 @@ package io.conceptive.quarkus.plugin.runconfig.factory;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.intellij.execution.Executor;
+import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.ExecutionEnvironment;
@@ -46,10 +46,14 @@ class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule> imp
   {
     return (pExec, pRunner) -> {
       ApplicationManager.getApplication().invokeLater(() -> {
-        if (pExec instanceof DefaultDebugExecutor)
-          executionFacade.executeNestedMavenRunConfig(this, getOptions(), NetUtility.findAvailableSocketPortUnchecked());
-        else
-          executionFacade.executeNestedMavenRunConfig(this, getOptions());
+        RunnerAndConfigurationSettings settings = pExecutionEnvironment.getRunnerAndConfigurationSettings();
+        if (settings != null) // how can this be null?
+        {
+          if (pExec instanceof DefaultDebugExecutor)
+            executionFacade.executeNestedMavenRunConfig(settings, this, getOptions(), NetUtility.findAvailableSocketPortUnchecked());
+          else
+            executionFacade.executeNestedMavenRunConfig(settings, this, getOptions());
+        }
       });
 
       return null;
