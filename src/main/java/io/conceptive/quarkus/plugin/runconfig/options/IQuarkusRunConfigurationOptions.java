@@ -2,6 +2,8 @@ package io.conceptive.quarkus.plugin.runconfig.options;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 /**
  * Information about all set options in a single run configuration
  *
@@ -16,5 +18,10 @@ public interface IQuarkusRunConfigurationOptions
   String getVmOptions();
 
   @Nullable
-  String getJRE();
+  String getJreName();
+
+  @Nullable
+  Map<String, String> getEnvVariables();
+
+  boolean getPassParentEnvParameters();
 }

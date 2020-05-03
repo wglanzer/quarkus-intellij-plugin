@@ -92,7 +92,11 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
 
     MavenRunnerSettings rsettings = MavenRunner.getInstance(getProject()).getState().clone();
     rsettings.setVmOptions(options.getVmOptions());
-    rsettings.setJreName(options.getJRE());
+    rsettings.setJreName(options.getJreName());
+    Map<String, String> envVariables = options.getEnvVariables();
+    if (envVariables != null)
+      rsettings.setEnvironmentProperties(envVariables);
+    rsettings.setPassParentEnv(options.getPassParentEnvParameters());
 
     Map<String, String> props = new HashMap<>(rsettings.getMavenProperties());
     if (attachDebugger)

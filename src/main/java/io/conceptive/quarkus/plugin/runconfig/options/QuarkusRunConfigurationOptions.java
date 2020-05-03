@@ -4,6 +4,8 @@ import com.intellij.execution.configurations.RunConfigurationOptions;
 import com.intellij.openapi.components.StoredPropertyBase;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 /**
  * Serializable options for quarkus run configuration
  *
@@ -14,7 +16,9 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
 
   public final StoredPropertyBase<String> workingDir;
   public final StoredPropertyBase<String> vmOptions;
-  public final StoredPropertyBase<String> jre;
+  public final StoredPropertyBase<String> jreName;
+  public final StoredPropertyBase<Map<String, String>> envVariables;
+  public final StoredPropertyBase<Boolean> passParentEnvParameters;
 
   public QuarkusRunConfigurationOptions()
   {
@@ -22,8 +26,12 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
     workingDir.setName("workingDir");
     vmOptions = string("");
     vmOptions.setName("vmOptions");
-    jre = string("");
-    jre.setName("jre");
+    jreName = string("");
+    jreName.setName("jreName");
+    envVariables = map();
+    envVariables.setName("envVariables");
+    passParentEnvParameters = property(true);
+    passParentEnvParameters.setName("passParentEnvParameters");
   }
 
   @Override
@@ -52,13 +60,36 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
 
   @Nullable
   @Override
-  public String getJRE()
+  public String getJreName()
   {
-    return jre.getValue(this);
+    return jreName.getValue(this);
   }
 
-  public void setJRE(@Nullable String pJRE)
+  public void setJreName(@Nullable String pJreName)
   {
-    jre.setValue(this, pJRE);
+    jreName.setValue(this, pJreName);
+  }
+
+  @Nullable
+  @Override
+  public Map<String, String> getEnvVariables()
+  {
+    return envVariables.getValue(this);
+  }
+
+  public void setEnvVariables(@Nullable Map<String, String> pVariables)
+  {
+    envVariables.setValue(this, pVariables);
+  }
+
+  @Override
+  public boolean getPassParentEnvParameters()
+  {
+    return passParentEnvParameters.getValue(this);
+  }
+
+  public void setPassParentEnvParameters(boolean pPass)
+  {
+    passParentEnvParameters.setValue(this, pPass);
   }
 }
