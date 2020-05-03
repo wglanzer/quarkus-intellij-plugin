@@ -15,7 +15,7 @@ Debug your quarkus applications without effort!
 ## Features
 ### Quarkus Run Configuration Type
 This plugin adds a run configuration type, named "Quarkus". 
-It will execute the "clean build quarkus:dev" maven goals in background and attach a new debugger instance via remote config if necessary.
+It will execute the "clean compile quarkus:dev" maven goals in background and attach a new debugger instance via remote config if necessary.
 
 ![Quarkus Run Configuration Type](.github/docs/runconfig.png)
 
