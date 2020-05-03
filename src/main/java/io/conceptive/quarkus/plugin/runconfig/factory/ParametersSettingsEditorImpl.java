@@ -47,6 +47,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     jre.setLabelLocation(BorderLayout.WEST);
     jre.setText("JRE");
     envVariables = new EnvironmentVariablesComponent();
+    envVariables.setText("Environment Variables");
     envVariables.setLabelLocation(BorderLayout.WEST);
   }
 

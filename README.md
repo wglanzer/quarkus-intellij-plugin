@@ -1,11 +1,34 @@
 # Quarkus Integration for JetBrains IntelliJ IDEA
 
-This plugin adds a run configuration for [quarkus](http://quarkus.io) to make debugging a lot more easier.
+![build](https://github.com/conceptivesolutions/quarkus-intellij-plugin/workflows/build/badge.svg)
 
-What the newly added runconfig does:
-1. Starting the "quarkus:dev" goal from your desired quarkus project
-2. If you started the runconfig in debug mode, the plugin will attach a remote debugging session on a random port
+This plugin adds features to JetBrains IntelliJ IDEA to integrate [quarkus.io](http://quarkus.io) a lot better and make it behave like
+a "normal IntelliJ IDEA application". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.
+Debug your quarkus applications without effort!  
 
-## Minimum Requirements
-- IntelliJ IDEA Community > 173.0
-- Installed and enabled "Maven" plugin
+:white_check_mark: IntelliJ Version 2020.1
+
+:white_check_mark: Maven Plugin
+
+
+## Features
+### Quarkus Run Configuration Type
+This plugin adds a run configuration type, named "Quarkus". 
+It will execute the "clean build quarkus:dev" maven goals in background and attach a new debugger instance via remote config if necessary.
+
+![Quarkus Run Configuration Type](.github/docs/runconfig.png)
+
+Working Directory: The root maven module to execute maven in
+
+VM Options: A list of parameters which will be delegated to maven
+
+JRE: Maven will use this JRE to run
+
+Environment Variables: Variables that will be passed to maven execution
+
+### Debug your Quarkus Applications
+![Debug Window](.github/docs/debug.png)
+
+If you want to debug your quarkus application, just start the newly added run configuration type within debug mode.
+It will automatically assign a new port to the "quarkus:dev" step and connects via remote debug config - 
+so seamless, that you won't notice any difference to your other java projects.
