@@ -5,6 +5,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.*;
+import com.intellij.ui.RawCommandLineEditor;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
@@ -21,22 +22,29 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
 {
 
   private final _WorkingDirectoryComponent workingDirComponent;
+  private final LabeledComponent<RawCommandLineEditor> vmOptions;
 
   public ParametersSettingsEditorImpl(@NotNull Project pProject)
   {
     workingDirComponent = new _WorkingDirectoryComponent(pProject);
+    vmOptions = new LabeledComponent<>();
+    vmOptions.setComponent(new RawCommandLineEditor());
+    vmOptions.setLabelLocation(BorderLayout.WEST);
+    vmOptions.setText("VM Options");
   }
 
   @Override
   protected void resetEditorFrom(@NotNull RunConfigImpl pImpl)
   {
     workingDirComponent.setValue(Strings.nullToEmpty(pImpl.getOptions().getWorkingDir()));
+    vmOptions.getComponent().setText(Strings.nullToEmpty(pImpl.getOptions().getVmOptions()));
   }
 
   @Override
   protected void applyEditorTo(@NotNull RunConfigImpl pImpl) throws ConfigurationException
   {
     pImpl.getOptions().setWorkingDir(workingDirComponent.getValue());
+    pImpl.getOptions().setVmOptions(vmOptions.getComponent().getText());
   }
 
   @NotNull
@@ -46,6 +54,8 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(workingDirComponent);
+    panel.add(Box.createVerticalStrut(4));
+    panel.add(vmOptions);
     return panel;
   }
 

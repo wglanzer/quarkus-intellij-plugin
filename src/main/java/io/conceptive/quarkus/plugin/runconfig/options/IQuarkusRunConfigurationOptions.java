@@ -11,4 +11,7 @@ public interface IQuarkusRunConfigurationOptions
 {
   @Nullable
   String getWorkingDir();
+
+  @Nullable
+  String getVmOptions();
 }

@@ -91,6 +91,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
       params.setWorkingDirPath(workingDir);
 
     MavenRunnerSettings rsettings = MavenRunner.getInstance(getProject()).getState().clone();
+    rsettings.setVmOptions(options.getVmOptions());
 
     Map<String, String> props = new HashMap<>(rsettings.getMavenProperties());
     if (attachDebugger)

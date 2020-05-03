@@ -13,11 +13,14 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
 {
 
   public final StoredPropertyBase<String> workingDir;
+  public final StoredPropertyBase<String> vmOptions;
 
   public QuarkusRunConfigurationOptions()
   {
     workingDir = string("");
     workingDir.setName("workingDir");
+    vmOptions = string("");
+    vmOptions.setName("vmOptions");
   }
 
   @Override
@@ -32,4 +35,15 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
     workingDir.setValue(this, pWorkingDir);
   }
 
+  @Nullable
+  @Override
+  public String getVmOptions()
+  {
+    return vmOptions.getValue(this);
+  }
+
+  public void setVmOptions(@Nullable String pOptions)
+  {
+    vmOptions.setValue(this, pOptions);
+  }
 }
