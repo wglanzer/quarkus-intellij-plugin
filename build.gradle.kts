@@ -1,5 +1,5 @@
 project.group = "io.conceptive.quarkus"
-project.version = "1.0.0"
+project.version = "1.0.1"
 
 plugins {
     id("java")
