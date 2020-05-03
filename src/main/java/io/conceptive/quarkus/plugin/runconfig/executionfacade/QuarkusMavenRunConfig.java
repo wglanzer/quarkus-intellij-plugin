@@ -72,6 +72,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
     options = pOptions;
     onRdy = pOnRdy;
     onRestart = pOnRestart;
+    stateRef = null;
   }
 
   /**
