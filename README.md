@@ -1,6 +1,7 @@
 # Quarkus Integration for JetBrains IntelliJ IDEA
 
 ![build](https://github.com/conceptivesolutions/quarkus-intellij-plugin/workflows/build/badge.svg)
+![version](https://img.shields.io/github/v/release/wglanzer/quarkus-intellij-plugin)
 
 This plugin adds features to JetBrains IntelliJ IDEA to integrate [quarkus.io](http://quarkus.io) a lot better and make it behave like
 a "normal IntelliJ IDEA application". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.
