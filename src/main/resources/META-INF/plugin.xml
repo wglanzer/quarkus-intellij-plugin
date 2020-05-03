@@ -5,13 +5,14 @@
   <vendor email="w.glanzer@conceptive.io">Werner Glanzer</vendor>
 
   <description><![CDATA[
-      This plugin provides a simple integration for Quarkus ( <a href="http://quarkus.io">http://quarkus.io</a> ) development.
-      It provides a simple way to execute the quarkus maven goal via run configuration.
-      If you want to debug your quarkus instance, it will add the "-Ddebug" parameter and attaches a remote debugger on a random port.
+      This plugin adds features to JetBrains IntelliJ IDEA to integrate quarkus.io a lot better and make it behave like
+a "normal IntelliJ IDEA application". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.
+Debug your quarkus applications without effort!
     ]]></description>
 
   <depends>com.intellij.modules.java</depends>
   <depends>org.jetbrains.idea.maven</depends>
+  <idea-version since-build="2020.1"/>
 
   <extensions defaultExtensionNs="com.intellij">
     <programRunner implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigRunner"/>
