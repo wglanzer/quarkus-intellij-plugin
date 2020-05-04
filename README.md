@@ -7,7 +7,7 @@ This plugin adds features to JetBrains IntelliJ IDEA to integrate [quarkus.io](h
 a "normal IntelliJ IDEA application". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.
 Debug your quarkus applications without effort!  
 
-:white_check_mark: IntelliJ Version 2020.1
+:white_check_mark: IntelliJ Version 2020.1 ( https://plugins.jetbrains.com/plugin/14242-quarkus-integration )
 
 :white_check_mark: Maven Plugin
 
