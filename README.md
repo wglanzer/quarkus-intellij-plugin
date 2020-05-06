@@ -27,9 +27,24 @@ JRE: Maven will use this JRE to run
 
 Environment Variables: Variables that will be passed to maven execution
 
-### Debug your Quarkus Applications
+### Debug your Quarkus applications
 ![Debug Window](.github/docs/debug.png)
 
 If you want to debug your quarkus application, just start the newly added run configuration type within debug mode.
 It will automatically assign a new port to the "quarkus:dev" step and connects via remote debug config - 
 so seamless, that you won't notice any difference to your other java projects.
+
+## How to install?
+### Official Release
+You can download this plugin within the official JetBrains plugin dialog integrated in IntelliJ IDEA.
+![Plugin Dialog](.github/docs/plugin_dialog.png)
+
+### GitHub Release
+There can be some releases which are not supposed to be publicly available yet.
+Those releases can be installed manually by downloading the latest releases on github.
+
+[https://github.com/conceptivesolutions/quarkus-intellij-plugin/releases/latest](https://github.com/conceptivesolutions/quarkus-intellij-plugin/releases/latest)
+
+The downloaded .zip file can be installed within the official JetBrains plugin dialog too.
+Just click "Install Plugin from Disk..." and select your previously downloaded file.
+![Plugin Dialog](.github/docs/plugin_manually.png)
