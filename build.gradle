@@ -1,0 +1,32 @@
+plugins {
+    id "java"
+    id "org.jetbrains.intellij" version "0.4.18"
+}
+
+project.group = "io.conceptive.quarkus"
+project.version = "1.0.2"
+
+repositories {
+    mavenCentral()
+    maven { setUrl("http://dl.bintray.com/jetbrains/intellij-plugin-service") }
+}
+
+intellij {
+    pluginName = "QuarkusIntegration"
+    plugins = ["maven", "java"]
+    updateSinceUntilBuild = false
+}
+
+patchPluginXml {
+    pluginDescription = "This plugin adds features to JetBrains IntelliJ IDEA to integrate quarkus.io a lot better and make it behave like\n" +
+        "a \"normal IntelliJ IDEA application\". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.\n" +
+        "Debug your quarkus applications without effort!"
+    changeNotes = "<ul>" +
+        "<li>Changed \"since build\" tag to correct 201.6487.11 version</li>" +
+        "</ul>"
+}
+
+dependencies {
+    implementation("com.google.inject:guice:4.2.3")
+    implementation("com.google.inject.extensions:guice-assistedinject:4.2.3")
+}

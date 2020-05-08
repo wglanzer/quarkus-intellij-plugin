@@ -4,12 +4,6 @@
   <name>Quarkus Integration</name>
   <vendor email="w.glanzer@conceptive.io">Werner Glanzer</vendor>
 
-  <description><![CDATA[
-      This plugin adds features to JetBrains IntelliJ IDEA to integrate quarkus.io a lot better and make it behave like
-a "normal IntelliJ IDEA application". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.
-Debug your quarkus applications without effort!
-    ]]></description>
-
   <depends>com.intellij.modules.java</depends>
   <depends>org.jetbrains.idea.maven</depends>
   <idea-version since-build="201.6487.11"/>
