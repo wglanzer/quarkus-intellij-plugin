@@ -84,7 +84,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
   JavaParameters createJavaParameters() throws ExecutionException
   {
     MavenRunnerParameters params = new MavenRunnerParameters();
-    params.setGoals(Arrays.asList("clean", "compile", "quarkus:dev"));
+    params.setGoals(_getGoals());
 
     String workingDir = options.getWorkingDir();
     if (workingDir != null)
@@ -104,6 +104,22 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
     rsettings.setMavenProperties(props);
 
     return MavenExternalParameters.createJavaParameters(getProject(), params, null, rsettings, this);
+  }
+
+  /**
+   * @return goals to be executed
+   */
+  @NotNull
+  private List<String> _getGoals()
+  {
+    List<String> goals = new ArrayList<>();
+    if (options.getCompileBeforeLaunch())
+    {
+      goals.add("clean");
+      goals.add("compile");
+    }
+    goals.add("quarkus:dev");
+    return goals;
   }
 
 }

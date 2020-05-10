@@ -24,4 +24,6 @@ public interface IQuarkusRunConfigurationOptions
   Map<String, String> getEnvVariables();
 
   boolean getPassParentEnvParameters();
+
+  boolean getCompileBeforeLaunch();
 }

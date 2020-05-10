@@ -19,6 +19,7 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
   public final StoredPropertyBase<String> jreName;
   public final StoredPropertyBase<Map<String, String>> envVariables;
   public final StoredPropertyBase<Boolean> passParentEnvParameters;
+  public final StoredPropertyBase<Boolean> compileBeforeLaunch;
 
   public QuarkusRunConfigurationOptions()
   {
@@ -32,6 +33,8 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
     envVariables.setName("envVariables");
     passParentEnvParameters = property(true);
     passParentEnvParameters.setName("passParentEnvParameters");
+    compileBeforeLaunch = property(true);
+    compileBeforeLaunch.setName("compileBeforeLaunch");
   }
 
   @Override
@@ -91,5 +94,16 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
   public void setPassParentEnvParameters(boolean pPass)
   {
     passParentEnvParameters.setValue(this, pPass);
+  }
+
+  @Override
+  public boolean getCompileBeforeLaunch()
+  {
+    return compileBeforeLaunch.getValue(this);
+  }
+
+  public void setCompileBeforeLaunch(boolean pCompile)
+  {
+    compileBeforeLaunch.setValue(this, pCompile);
   }
 }

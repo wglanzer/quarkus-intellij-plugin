@@ -22,6 +22,7 @@ patchPluginXml {
         "a \"normal IntelliJ IDEA application\". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.\n" +
         "Debug your quarkus applications without effort!"
     changeNotes = "<ul>" +
+        "<li>Added 'compile before launch' checkbox in run config to define, if the 'clean' and 'compile' goals should be executed before launching 'quarkus:dev'</li>" +
         "<li>Changed \"since build\" tag to correct 201.6487.11 version</li>" +
         "</ul>"
 }

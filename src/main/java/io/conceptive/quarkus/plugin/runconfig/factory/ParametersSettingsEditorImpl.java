@@ -32,6 +32,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
   private final LabeledComponent<JdkComboBox> jre;
   private final ProjectSdksModel projectSdksModel;
   private final EnvironmentVariablesComponent envVariables;
+  private final JCheckBox compileBeforeLaunch;
 
   public ParametersSettingsEditorImpl(@NotNull Project pProject)
   {
@@ -49,6 +50,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     envVariables = new EnvironmentVariablesComponent();
     envVariables.setText("Environment Variables");
     envVariables.setLabelLocation(BorderLayout.WEST);
+    compileBeforeLaunch = new JCheckBox("Compile before launch");
   }
 
   @Override
@@ -60,6 +62,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     jre.getComponent().setSelectedItem(projectSdksModel.findSdk(Strings.nullToEmpty(options.getJreName())));
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
     envVariables.setPassParentEnvs(options.getPassParentEnvParameters());
+    compileBeforeLaunch.setSelected(options.getCompileBeforeLaunch());
   }
 
   @Override
@@ -73,6 +76,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
       options.setJreName(selectedJDK.getName());
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());
+    options.setCompileBeforeLaunch(compileBeforeLaunch.isSelected());
   }
 
   @NotNull
@@ -81,14 +85,31 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
   {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.add(workingDirComponent);
+    panel.add(_leftJustify(workingDirComponent));
     panel.add(Box.createVerticalStrut(4));
-    panel.add(vmOptions);
+    panel.add(_leftJustify(vmOptions));
     panel.add(Box.createVerticalStrut(4));
-    panel.add(jre);
+    panel.add(_leftJustify(jre));
     panel.add(Box.createVerticalStrut(4));
-    panel.add(envVariables);
+    panel.add(_leftJustify(envVariables));
+    panel.add(Box.createVerticalStrut(4));
+    panel.add(_leftJustify(compileBeforeLaunch));
     return panel;
+  }
+
+  /**
+   * Ensures, that all components get left aligned in the outter BoxLayout
+   *
+   * @param pComp Component
+   * @return the wrapped Box
+   */
+  @NotNull
+  private Component _leftJustify(@NotNull JComponent pComp)
+  {
+    Box b = Box.createHorizontalBox();
+    b.add(pComp);
+    b.add(Box.createHorizontalGlue());
+    return b;
   }
 
   /**
