@@ -3,13 +3,14 @@ package io.conceptive.quarkus.plugin.runconfig.factory;
 import com.google.common.base.Strings;
 import com.intellij.execution.configuration.EnvironmentVariablesComponent;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.options.*;
+import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.*;
-import com.intellij.ui.RawCommandLineEditor;
+import com.intellij.ui.*;
+import com.intellij.util.ui.UIUtil;
 import io.conceptive.quarkus.plugin.runconfig.options.QuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
@@ -24,7 +25,7 @@ import java.util.HashMap;
  *
  * @author w.glanzer, 21.04.2020
  */
-class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
+class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl> implements PanelWithAnchor
 {
 
   private final _WorkingDirectoryComponent workingDirComponent;
@@ -32,7 +33,8 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
   private final LabeledComponent<JdkComboBox> jre;
   private final ProjectSdksModel projectSdksModel;
   private final EnvironmentVariablesComponent envVariables;
-  private final JCheckBox compileBeforeLaunch;
+  private final LabeledComponent<JCheckBox> compileBeforeLaunch;
+  private JComponent myAnchor;
 
   public ParametersSettingsEditorImpl(@NotNull Project pProject)
   {
@@ -50,7 +52,11 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     envVariables = new EnvironmentVariablesComponent();
     envVariables.setText("Environment Variables");
     envVariables.setLabelLocation(BorderLayout.WEST);
-    compileBeforeLaunch = new JCheckBox("Compile before launch");
+    compileBeforeLaunch = new LabeledComponent<>();
+    compileBeforeLaunch.setComponent(new JCheckBox());
+    compileBeforeLaunch.setText("Compile before launch");
+    compileBeforeLaunch.setLabelLocation(BorderLayout.WEST);
+    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, jre, envVariables, compileBeforeLaunch);
   }
 
   @Override
@@ -62,11 +68,11 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
     jre.getComponent().setSelectedItem(projectSdksModel.findSdk(Strings.nullToEmpty(options.getJreName())));
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
     envVariables.setPassParentEnvs(options.getPassParentEnvParameters());
-    compileBeforeLaunch.setSelected(options.getCompileBeforeLaunch());
+    compileBeforeLaunch.getComponent().setSelected(options.getCompileBeforeLaunch());
   }
 
   @Override
-  protected void applyEditorTo(@NotNull RunConfigImpl pImpl) throws ConfigurationException
+  protected void applyEditorTo(@NotNull RunConfigImpl pImpl)
   {
     QuarkusRunConfigurationOptions options = pImpl.getOptions();
     options.setWorkingDir(workingDirComponent.getValue());
@@ -76,7 +82,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
       options.setJreName(selectedJDK.getName());
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());
-    options.setCompileBeforeLaunch(compileBeforeLaunch.isSelected());
+    options.setCompileBeforeLaunch(compileBeforeLaunch.getComponent().isSelected());
   }
 
   @NotNull
@@ -85,31 +91,33 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl>
   {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.add(_leftJustify(workingDirComponent));
+    panel.add(workingDirComponent);
     panel.add(Box.createVerticalStrut(4));
-    panel.add(_leftJustify(vmOptions));
+    panel.add(vmOptions);
     panel.add(Box.createVerticalStrut(4));
-    panel.add(_leftJustify(jre));
+    panel.add(jre);
     panel.add(Box.createVerticalStrut(4));
-    panel.add(_leftJustify(envVariables));
+    panel.add(envVariables);
     panel.add(Box.createVerticalStrut(4));
-    panel.add(_leftJustify(compileBeforeLaunch));
+    panel.add(compileBeforeLaunch);
     return panel;
   }
 
-  /**
-   * Ensures, that all components get left aligned in the outter BoxLayout
-   *
-   * @param pComp Component
-   * @return the wrapped Box
-   */
-  @NotNull
-  private Component _leftJustify(@NotNull JComponent pComp)
+  @Override
+  public JComponent getAnchor()
   {
-    Box b = Box.createHorizontalBox();
-    b.add(pComp);
-    b.add(Box.createHorizontalGlue());
-    return b;
+    return myAnchor;
+  }
+
+  @Override
+  public void setAnchor(@Nullable JComponent anchor)
+  {
+    myAnchor = anchor;
+    workingDirComponent.setAnchor(anchor);
+    vmOptions.setAnchor(anchor);
+    jre.setAnchor(anchor);
+    envVariables.setAnchor(anchor);
+    compileBeforeLaunch.setAnchor(anchor);
   }
 
   /**
