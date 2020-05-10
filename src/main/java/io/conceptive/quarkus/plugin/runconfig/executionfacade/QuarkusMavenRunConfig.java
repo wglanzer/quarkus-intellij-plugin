@@ -9,6 +9,7 @@ import io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigType;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
+import org.jetbrains.idea.maven.server.*;
 
 import javax.swing.*;
 import java.lang.ref.WeakReference;
@@ -80,8 +81,8 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
    *
    * @return Parameters instance
    */
-  @NotNull
-  JavaParameters createJavaParameters() throws ExecutionException
+  @Override
+  public JavaParameters createJavaParameters(@Nullable Project project) throws ExecutionException
   {
     MavenRunnerParameters params = new MavenRunnerParameters();
     params.setGoals(_getGoals());
@@ -103,7 +104,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
       props.put("debug", String.valueOf(port));
     rsettings.setMavenProperties(props);
 
-    return MavenExternalParameters.createJavaParameters(getProject(), params, null, rsettings, this);
+    return _removeMavenEventListener(MavenExternalParameters.createJavaParameters(getProject(), params, null, rsettings, this));
   }
 
   /**
@@ -122,4 +123,19 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
     return goals;
   }
 
+  /**
+   * Removes the maven event listener, so that no "ARTIFACT_RESOLVED" or "ARTIFACT_RESOLVING" logs appear in console
+   *
+   * @param pParameters JavaParameters to manipulate
+   * @return the manipulated parameters
+   */
+  @NotNull
+  private static JavaParameters _removeMavenEventListener(@NotNull JavaParameters pParameters)
+  {
+    String listenerPath = MavenServerManager.getMavenEventListener().getAbsolutePath();
+    String extClassPath = pParameters.getVMParametersList().getPropertyValue(MavenServerEmbedder.MAVEN_EXT_CLASS_PATH);
+    if (extClassPath != null && extClassPath.contains(listenerPath))
+      pParameters.getVMParametersList().replaceOrAppend("-D" + MavenServerEmbedder.MAVEN_EXT_CLASS_PATH, extClassPath.replace(listenerPath, ""));
+    return pParameters;
+  }
 }

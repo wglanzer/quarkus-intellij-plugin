@@ -36,7 +36,7 @@ class QuarkusMavenState extends JavaCommandLineState
   @Override
   protected JavaParameters createJavaParameters() throws ExecutionException
   {
-    return quarkusMavenRunConfig.createJavaParameters();
+    return quarkusMavenRunConfig.createJavaParameters(null);
   }
 
   @NotNull
