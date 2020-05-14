@@ -17,18 +17,6 @@ intellij {
     updateSinceUntilBuild = false
 }
 
-patchPluginXml {
-    pluginDescription = "This plugin adds features to JetBrains IntelliJ IDEA to integrate quarkus.io a lot better and make it behave like\n" +
-        "a \"normal IntelliJ IDEA application\". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.\n" +
-        "Debug your quarkus applications without effort!"
-    changeNotes = "<ul>" +
-        "<li>Removed unnecessary \"ARTIFACT_RESOLVING\" and \"ARTIFACT_RESOLVED\" logs from maven output</li>"
-        "<li>Improved layout in run config editor</li>"
-        "<li>Added \"compile before launch\" checkbox in run config to define, if the \"clean\" and \"compile\" goals should be executed before launching \"quarkus:dev\"</li>" +
-        "<li>Changed \"since build\" tag to correct 201.6487.11 version</li>" +
-        "</ul>"
-}
-
 dependencies {
     implementation("com.google.inject:guice:4.2.3")
     implementation("com.google.inject.extensions:guice-assistedinject:4.2.3")
