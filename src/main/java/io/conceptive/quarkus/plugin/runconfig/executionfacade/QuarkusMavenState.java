@@ -85,11 +85,19 @@ class QuarkusMavenState extends JavaCommandLineState
     public void onTextAvailable(@NotNull ProcessEvent pProcessEvent, @NotNull Key pKey)
     {
       String text = pProcessEvent.getText();
-      if (text != null && text.startsWith(_DEBUGGER_READY_STRING))
+      if (text != null && text.contains(_DEBUGGER_READY_STRING))
       {
         processHandler.removeProcessListener(this);
         if (onReady != null)
           onReady.accept(processHandler);
+
+        int debugStringStart = text.indexOf(_DEBUGGER_READY_STRING) + _DEBUGGER_READY_STRING.length();
+        if (debugStringStart < text.length())
+        {
+          String remainingText = text.substring(debugStringStart);
+          if (!remainingText.trim().isEmpty())
+            processHandler.notifyTextAvailable(remainingText, pKey);
+        }
       }
     }
   }

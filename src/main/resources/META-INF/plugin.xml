@@ -15,6 +15,7 @@
   </description>
   <change-notes><![CDATA[ <ul>
       <li>Fixed change-notes in plugin.xml, so that they include complete notes</li>
+      <li>Fixed corrupted console logs on slow machines</li>
     </ul> ]]></change-notes>
 
   <extensions defaultExtensionNs="com.intellij">
