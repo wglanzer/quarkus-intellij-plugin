@@ -18,11 +18,11 @@ public interface IInternalRunConfigs
     /**
      * Reinitializes this RunConfig with new settings
      *
-     * @param pMavenProcessHandler ProcessHandler for the Maven Process
+     * @param pBuildProcessHandler ProcessHandler for the build Process
      * @param pPort                Debug-Port
      * @param pOnRestart           Runnable that gets called, if this runconfig gets restartet
      */
-    void reinit(@Nullable ProcessHandler pMavenProcessHandler, int pPort, @Nullable Runnable pOnRestart);
+    void reinit(@Nullable ProcessHandler pBuildProcessHandler, int pPort, @Nullable Runnable pOnRestart);
   }
 
   interface IBuildRunConfig extends RunConfiguration
