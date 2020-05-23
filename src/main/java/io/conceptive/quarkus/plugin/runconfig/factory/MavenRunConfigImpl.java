@@ -2,6 +2,7 @@ package io.conceptive.quarkus.plugin.runconfig.factory;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.google.inject.name.Named;
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.executors.DefaultDebugExecutor;
@@ -10,7 +11,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.Project;
 import io.conceptive.quarkus.plugin.runconfig.executionfacade.IRunConfigExecutionFacade;
-import io.conceptive.quarkus.plugin.runconfig.options.QuarkusMavenRunConfigurationOptions;
+import io.conceptive.quarkus.plugin.runconfig.options.MavenRunConfigurationOptions;
 import io.conceptive.quarkus.plugin.util.NetUtility;
 import org.jetbrains.annotations.*;
 
@@ -19,14 +20,15 @@ import org.jetbrains.annotations.*;
  *
  * @author w.glanzer, 12.06.2019
  */
-class QuarkusMavenRunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule>
+class MavenRunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule>
 {
 
   @Inject
+  @Named("maven")
   private IRunConfigExecutionFacade executionFacade;
 
   @Inject
-  QuarkusMavenRunConfigImpl(@Assisted @NotNull Project pProject, @Assisted @NotNull ConfigurationFactory pConfigurationFactory)
+  MavenRunConfigImpl(@Assisted @NotNull Project pProject, @Assisted @NotNull ConfigurationFactory pConfigurationFactory)
   {
     super(pProject, pConfigurationFactory, null);
   }
@@ -35,8 +37,8 @@ class QuarkusMavenRunConfigImpl extends RunConfigurationBase<JavaRunConfiguratio
   @Override
   public SettingsEditor<? extends RunConfiguration> getConfigurationEditor()
   {
-    SettingsEditorGroup<QuarkusMavenRunConfigImpl> group = new SettingsEditorGroup<>();
-    group.addEditor("Parameters", new QuarkusMavenParametersSettingsEditorImpl(getProject()));
+    SettingsEditorGroup<MavenRunConfigImpl> group = new SettingsEditorGroup<>();
+    group.addEditor("Parameters", new MavenParametersSettingsEditorImpl(getProject()));
     return group;
   }
 
@@ -50,9 +52,9 @@ class QuarkusMavenRunConfigImpl extends RunConfigurationBase<JavaRunConfiguratio
         if (settings != null) // how can this be null?
         {
           if (pExec instanceof DefaultDebugExecutor)
-            executionFacade.executeNestedMavenRunConfig(settings, this, getOptions(), NetUtility.findAvailableSocketPortUnchecked());
+            executionFacade.executeNestedRunConfigs(settings, this, getOptions(), NetUtility.findAvailableSocketPortUnchecked());
           else
-            executionFacade.executeNestedMavenRunConfig(settings, this, getOptions());
+            executionFacade.executeNestedRunConfigs(settings, this, getOptions());
         }
       });
 
@@ -62,9 +64,9 @@ class QuarkusMavenRunConfigImpl extends RunConfigurationBase<JavaRunConfiguratio
 
   @NotNull
   @Override
-  public QuarkusMavenRunConfigurationOptions getOptions()
+  public MavenRunConfigurationOptions getOptions()
   {
-    return (QuarkusMavenRunConfigurationOptions) super.getOptions();
+    return (MavenRunConfigurationOptions) super.getOptions();
   }
 
 }

@@ -19,7 +19,7 @@ public interface IRunConfigExecutionFacade
    * @param pSource  Source-Config
    * @param pOptions Execution Options
    */
-  void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions);
+  void executeNestedRunConfigs(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions);
 
   /**
    * Executes the nested maven run config and attaches debugger when possible
@@ -28,6 +28,6 @@ public interface IRunConfigExecutionFacade
    * @param pOptions   Execution Options
    * @param pDebugPort Port for Debugger
    */
-  void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions, @NotNull Integer pDebugPort);
+  void executeNestedRunConfigs(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions, @NotNull Integer pDebugPort);
 
 }

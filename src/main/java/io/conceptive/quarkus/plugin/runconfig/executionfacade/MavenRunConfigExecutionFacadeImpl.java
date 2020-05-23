@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author w.glanzer, 21.04.2020
  */
-public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
+class MavenRunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
 {
 
   // the runconfigs have to be saved here, so that "single instance" will kill those configs too
@@ -20,7 +20,7 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
   private QuarkusDebugRunConfig debugRunConfig;
 
   @Override
-  public synchronized void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions)
+  public synchronized void executeNestedRunConfigs(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions)
   {
     if (mavenRunConfig == null)
       mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
@@ -30,8 +30,8 @@ public class RunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
   }
 
   @Override
-  public synchronized void executeNestedMavenRunConfig(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions,
-                                                       @NotNull Integer pDebugPort)
+  public synchronized void executeNestedRunConfigs(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions,
+                                                   @NotNull Integer pDebugPort)
   {
     if (mavenRunConfig == null)
       mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());

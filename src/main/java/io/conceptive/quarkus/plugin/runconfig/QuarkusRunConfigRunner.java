@@ -29,7 +29,7 @@ public class QuarkusRunConfigRunner extends GenericProgramRunner<RunnerSettings>
   {
     // only run our quarkus config type
     if (pRunProfile instanceof RunConfiguration)
-      return ((RunConfiguration) pRunProfile).getType() instanceof QuarkusMavenRunConfigType;
+      return ((RunConfiguration) pRunProfile).getType() instanceof IQuarkusRunConfigType;
     return false;
   }
 

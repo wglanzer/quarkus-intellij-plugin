@@ -1,7 +1,8 @@
 package io.conceptive.quarkus.plugin.runconfig.factory;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.*;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.name.Names;
 import com.intellij.execution.configurations.RunConfiguration;
 
 /**
@@ -14,8 +15,8 @@ public class RunConfigFactoryModule extends AbstractModule
   protected void configure()
   {
     install(new FactoryModuleBuilder()
-                .implement(RunConfiguration.class, QuarkusMavenRunConfigImpl.class)
-                .build(IRunConfigFactory.class));
+                .implement(RunConfiguration.class, MavenRunConfigImpl.class)
+                .build(Key.get(IRunConfigFactory.class, Names.named("maven"))));
   }
 
 }

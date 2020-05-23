@@ -7,7 +7,7 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.remote.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
-import io.conceptive.quarkus.plugin.runconfig.QuarkusMavenRunConfigType;
+import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
 import org.jdom.Element;
 import org.jetbrains.annotations.*;
 
@@ -39,7 +39,7 @@ class QuarkusDebugRunConfig extends RemoteConfiguration
   @Override
   public Icon getIcon()
   {
-    return QuarkusMavenRunConfigType.ICON;
+    return IQuarkusRunConfigType.ICON;
   }
 
   @Override
