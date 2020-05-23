@@ -5,7 +5,9 @@
   <vendor email="w.glanzer@conceptive.io">Werner Glanzer</vendor>
 
   <depends>com.intellij.modules.java</depends>
+  <depends>com.intellij.gradle</depends>
   <depends>org.jetbrains.idea.maven</depends>
+
   <idea-version since-build="201.6487.11"/>
 
   <description>
@@ -14,6 +16,7 @@
     and attaches a debugger if you want to. Debug your quarkus applications without effort!
   </description>
   <change-notes><![CDATA[ <ul>
+      <li>Added support for gradle</li>
       <li>Fixed change-notes in plugin.xml, so that they include complete notes</li>
       <li>Fixed corrupted console logs on slow machines</li>
     </ul> ]]></change-notes>
@@ -21,6 +24,8 @@
   <extensions defaultExtensionNs="com.intellij">
     <programRunner implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigRunner"/>
     <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusMavenRunConfigType"/>
+    <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusGradleRunConfigType"/>
+    <externalSystemTaskNotificationListener implementation="io.conceptive.quarkus.plugin.runconfig.executionfacade.gradle.GradleNotificationListener"/>
   </extensions>
 
 </idea-plugin>

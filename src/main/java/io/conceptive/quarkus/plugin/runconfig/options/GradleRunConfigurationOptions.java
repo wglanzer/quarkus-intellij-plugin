@@ -9,26 +9,25 @@ import java.util.Map;
 /**
  * Serializable options for quarkus run configuration
  *
- * @author w.glanzer, 20.04.2020
+ * @author w.glanzer, 23.05.2020
  */
-public class MavenRunConfigurationOptions extends RunConfigurationOptions implements IQuarkusRunConfigurationOptions
+public class GradleRunConfigurationOptions extends RunConfigurationOptions implements IQuarkusRunConfigurationOptions
 {
-
   public final StoredPropertyBase<String> workingDir;
   public final StoredPropertyBase<String> vmOptions;
-  public final StoredPropertyBase<String> jreName;
+  public final StoredPropertyBase<String> arguments;
   public final StoredPropertyBase<Map<String, String>> envVariables;
   public final StoredPropertyBase<Boolean> passParentEnvParameters;
   public final StoredPropertyBase<Boolean> compileBeforeLaunch;
 
-  public MavenRunConfigurationOptions()
+  public GradleRunConfigurationOptions()
   {
     workingDir = string("");
     workingDir.setName("workingDir");
     vmOptions = string("");
     vmOptions.setName("vmOptions");
-    jreName = string("");
-    jreName.setName("jreName");
+    arguments = string("");
+    arguments.setName("arguments");
     envVariables = map();
     envVariables.setName("envVariables");
     passParentEnvParameters = property(true);
@@ -65,19 +64,19 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
   @Override
   public String getArguments()
   {
-    return null;
+    return arguments.getValue(this);
+  }
+
+  public void setArguments(@Nullable String pArguments)
+  {
+    arguments.setValue(this, pArguments);
   }
 
   @Nullable
   @Override
   public String getJreName()
   {
-    return jreName.getValue(this);
-  }
-
-  public void setJreName(@Nullable String pJreName)
-  {
-    jreName.setValue(this, pJreName);
+    return null;
   }
 
   @Nullable

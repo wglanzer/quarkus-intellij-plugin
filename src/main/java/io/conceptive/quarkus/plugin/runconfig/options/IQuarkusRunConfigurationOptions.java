@@ -18,6 +18,9 @@ public interface IQuarkusRunConfigurationOptions
   String getVmOptions();
 
   @Nullable
+  String getArguments();
+
+  @Nullable
   String getJreName();
 
   @Nullable

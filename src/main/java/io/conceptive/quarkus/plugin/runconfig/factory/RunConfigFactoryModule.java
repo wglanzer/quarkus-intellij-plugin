@@ -17,6 +17,9 @@ public class RunConfigFactoryModule extends AbstractModule
     install(new FactoryModuleBuilder()
                 .implement(RunConfiguration.class, MavenRunConfigImpl.class)
                 .build(Key.get(IRunConfigFactory.class, Names.named("maven"))));
+    install(new FactoryModuleBuilder()
+                .implement(RunConfiguration.class, GradleRunConfigImpl.class)
+                .build(Key.get(IRunConfigFactory.class, Names.named("gradle"))));
   }
 
 }
