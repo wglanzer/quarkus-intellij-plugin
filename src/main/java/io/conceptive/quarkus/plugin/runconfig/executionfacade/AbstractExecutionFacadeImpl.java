@@ -6,44 +6,54 @@ import com.intellij.execution.executors.*;
 import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl;
 import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author w.glanzer, 21.04.2020
+ * @author w.glanzer, 23.05.2020
  */
-class MavenRunConfigExecutionFacadeImpl implements IRunConfigExecutionFacade
+public abstract class AbstractExecutionFacadeImpl implements IRunConfigExecutionFacade
 {
 
   // the runconfigs have to be saved here, so that "single instance" will kill those configs too
-  private QuarkusMavenRunConfig mavenRunConfig;
-  private QuarkusDebugRunConfig debugRunConfig;
+  private IInternalRunConfigs.IBuildRunConfig buildRunConfig;
+  private IInternalRunConfigs.IDebugRunConfig debugRunConfig;
 
   @Override
   public synchronized void executeNestedRunConfigs(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions)
   {
-    if (mavenRunConfig == null)
-      mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
-    mavenRunConfig.setName(pSource.getName());
-    mavenRunConfig.reinit(null, pOptions, null, () -> ExecutionUtil.runConfiguration(pSettings, DefaultRunExecutor.getRunExecutorInstance()));
-    execute(pSettings, pSource, mavenRunConfig, DefaultRunExecutor.getRunExecutorInstance());
+    if (buildRunConfig == null)
+      buildRunConfig = createBuildConfig(pSource.getProject());
+    buildRunConfig.setName(pSource.getName());
+    buildRunConfig.reinit(null, pOptions, null, () -> ExecutionUtil.runConfiguration(pSettings, DefaultRunExecutor.getRunExecutorInstance()));
+    execute(pSettings, pSource, buildRunConfig, DefaultRunExecutor.getRunExecutorInstance());
   }
 
   @Override
   public synchronized void executeNestedRunConfigs(@NotNull RunnerAndConfigurationSettings pSettings, @NotNull RunConfiguration pSource, @NotNull IQuarkusRunConfigurationOptions pOptions,
                                                    @NotNull Integer pDebugPort)
   {
-    if (mavenRunConfig == null)
-      mavenRunConfig = new QuarkusMavenRunConfig(pSource.getProject());
-    mavenRunConfig.setName(pSource.getName());
-    mavenRunConfig.reinit(pDebugPort, pOptions, (pMavenHandle) -> ApplicationManager.getApplication().invokeLater(() -> {
+    if (buildRunConfig == null)
+      buildRunConfig = createBuildConfig(pSource.getProject());
+    buildRunConfig.setName(pSource.getName());
+    buildRunConfig.reinit(pDebugPort, pOptions, (pProcessHandle) -> ApplicationManager.getApplication().invokeLater(() -> {
       if (debugRunConfig == null)
-        debugRunConfig = new QuarkusDebugRunConfig(pSource.getProject());
+        debugRunConfig = createDebugConfig(pSource.getProject());
       debugRunConfig.setName(pSource.getName());
-      debugRunConfig.reinit(pMavenHandle, pDebugPort, () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
+      debugRunConfig.reinit(pProcessHandle, pDebugPort, () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
       execute(pSettings, pSource, debugRunConfig, DefaultDebugExecutor.getDebugExecutorInstance());
     }), () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
-    execute(pSettings, pSource, mavenRunConfig, DefaultDebugExecutor.getDebugExecutorInstance());
+    execute(pSettings, pSource, buildRunConfig, DefaultRunExecutor.getRunExecutorInstance());
+  }
+
+  @NotNull
+  protected abstract IInternalRunConfigs.IBuildRunConfig createBuildConfig(@NotNull Project pProject);
+
+  @NotNull
+  protected IInternalRunConfigs.IDebugRunConfig createDebugConfig(@NotNull Project pProject)
+  {
+    return new QuarkusDebugRunConfig(pProject);
   }
 
   /**

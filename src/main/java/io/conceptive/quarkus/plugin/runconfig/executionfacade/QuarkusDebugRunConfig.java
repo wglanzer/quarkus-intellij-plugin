@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
  *
  * @author w.glanzer, 13.06.2019
  */
-class QuarkusDebugRunConfig extends RemoteConfiguration
+class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunConfigs.IDebugRunConfig
 {
 
   private ProcessHandler mavenProcessHandler;
@@ -70,13 +70,7 @@ class QuarkusDebugRunConfig extends RemoteConfiguration
     return state;
   }
 
-  /**
-   * Reinitializes this RunConfig with new settings
-   *
-   * @param pMavenProcessHandler ProcessHandler for the Maven Process
-   * @param pPort                Debug-Port
-   * @param pOnRestart           Runnable that gets called, if this runconfig gets restartet
-   */
+  @Override
   public void reinit(@Nullable ProcessHandler pMavenProcessHandler, int pPort, @Nullable Runnable pOnRestart)
   {
     mavenProcessHandler = pMavenProcessHandler;

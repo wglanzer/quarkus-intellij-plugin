@@ -1,4 +1,4 @@
-package io.conceptive.quarkus.plugin.runconfig.executionfacade;
+package io.conceptive.quarkus.plugin.runconfig.executionfacade.maven;
 
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
@@ -6,6 +6,7 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
 import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
+import io.conceptive.quarkus.plugin.runconfig.executionfacade.IInternalRunConfigs;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
  *
  * @author w.glanzer, 13.06.2019
  */
-class QuarkusMavenRunConfig extends MavenRunConfiguration
+class QuarkusMavenRunConfig extends MavenRunConfiguration implements IInternalRunConfigs.IBuildRunConfig
 {
 
   private int port;
@@ -60,12 +61,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
     return state;
   }
 
-  /**
-   * Reinitializes this RunConfig with new settings
-   *
-   * @param pPort  Debug-Port
-   * @param pOnRdy Consumer which handles ready-Events
-   */
+  @Override
   public void reinit(@Nullable Integer pPort, @NotNull IQuarkusRunConfigurationOptions pOptions, @Nullable Consumer<ProcessHandler> pOnRdy, @Nullable Runnable pOnRestart)
   {
     attachDebugger = pOnRdy != null && pPort != null;

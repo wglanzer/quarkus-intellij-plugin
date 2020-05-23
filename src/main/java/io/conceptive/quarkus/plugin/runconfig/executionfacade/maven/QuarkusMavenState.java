@@ -1,4 +1,4 @@
-package io.conceptive.quarkus.plugin.runconfig.executionfacade;
+package io.conceptive.quarkus.plugin.runconfig.executionfacade.maven;
 
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
