@@ -3,10 +3,11 @@ package io.conceptive.quarkus.plugin.runconfig.executionfacade;
 import com.intellij.debugger.impl.GenericDebuggerRunnerSettings;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.RunProfileState;
-import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.*;
 import com.intellij.execution.remote.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
 import org.jdom.Element;
 import org.jetbrains.annotations.*;
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Part II: Connect debugger to started Quarkus instance
@@ -23,9 +26,10 @@ import java.lang.reflect.Field;
 class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunConfigs.IDebugRunConfig
 {
 
-  private ProcessHandler mavenProcessHandler;
+  private ProcessHandler buildProcessHandler;
   private Runnable onRestart;
   private WeakReference<RunProfileState> stateRef = null;
+  private CachingProcessListener messageCache = null;
 
   public QuarkusDebugRunConfig(@NotNull Project project)
   {
@@ -65,15 +69,19 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
       debuggerSettings.setTransport(USE_SOCKET_TRANSPORT ? 0 : 1);
     }
 
-    QuarkusDebugState state = new QuarkusDebugState(getProject(), createRemoteConnection(), AUTO_RESTART, mavenProcessHandler);
+    QuarkusDebugState state = new QuarkusDebugState(getProject(), createRemoteConnection(), AUTO_RESTART, buildProcessHandler, messageCache != null ? messageCache : List::of);
     stateRef = new WeakReference<>(state);
     return state;
   }
 
   @Override
-  public void reinit(@Nullable ProcessHandler pMavenProcessHandler, int pPort, @Nullable Runnable pOnRestart)
+  public void reinit(@Nullable ProcessHandler pBuildProcessHandler, int pPort, @Nullable Runnable pOnRestart)
   {
-    mavenProcessHandler = pMavenProcessHandler;
+    if (messageCache != null)
+      messageCache.invalidate();
+    buildProcessHandler = pBuildProcessHandler;
+    if (buildProcessHandler != null)
+      buildProcessHandler.addProcessListener((messageCache = new CachingProcessListener(buildProcessHandler)));
     onRestart = pOnRestart;
     PORT = String.valueOf(pPort);
     stateRef = null;
@@ -110,6 +118,59 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
     catch (Exception e)
     {
       throw new RuntimeException("_preventSettingsFromBeingSavedToDisk does not work anymore", e);
+    }
+  }
+
+  /**
+   * Listener to cache all messages that arrive between hiding build config and showing debugging config
+   */
+  protected static class CachingProcessListener extends ProcessAdapter implements Supplier<List<Map.Entry<String, Key<?>>>>
+  {
+    private final List<Map.Entry<String, Key<?>>> cache = new ArrayList<>();
+    private ProcessHandler handler;
+
+    public CachingProcessListener(@NotNull ProcessHandler pHandler)
+    {
+      handler = pHandler;
+    }
+
+    @Override
+    public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType)
+    {
+      synchronized (cache)
+      {
+        if (handler != null)
+        {
+          String text = event.getText();
+          if (text != null)
+            //noinspection unchecked
+            cache.add(Map.entry(text, outputType));
+        }
+      }
+    }
+
+    @NotNull
+    public List<Map.Entry<String, Key<?>>> get()
+    {
+      synchronized (cache)
+      {
+        List<Map.Entry<String, Key<?>>> result = List.copyOf(cache);
+        invalidate();
+        return result;
+      }
+    }
+
+    public void invalidate()
+    {
+      synchronized (cache)
+      {
+        if (handler != null)
+        {
+          handler.removeProcessListener(this);
+          handler = null;
+        }
+        cache.clear();
+      }
     }
   }
 
