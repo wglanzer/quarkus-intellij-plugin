@@ -20,7 +20,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <programRunner implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigRunner"/>
-    <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigType"/>
+    <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusMavenRunConfigType"/>
   </extensions>
 
 </idea-plugin>

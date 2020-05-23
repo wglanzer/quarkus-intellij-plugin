@@ -14,7 +14,7 @@ public class RunConfigFactoryModule extends AbstractModule
   protected void configure()
   {
     install(new FactoryModuleBuilder()
-                .implement(RunConfiguration.class, RunConfigImpl.class)
+                .implement(RunConfiguration.class, QuarkusMavenRunConfigImpl.class)
                 .build(IRunConfigFactory.class));
   }
 

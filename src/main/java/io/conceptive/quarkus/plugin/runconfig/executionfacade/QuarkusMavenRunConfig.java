@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
-import io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigType;
+import io.conceptive.quarkus.plugin.runconfig.QuarkusMavenRunConfigType;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
@@ -40,7 +40,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration
   @Override
   public Icon getIcon()
   {
-    return QuarkusRunConfigType.ICON;
+    return QuarkusMavenRunConfigType.ICON;
   }
 
   @Nullable

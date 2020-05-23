@@ -11,7 +11,7 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.*;
 import com.intellij.ui.*;
 import com.intellij.util.ui.UIUtil;
-import io.conceptive.quarkus.plugin.runconfig.options.QuarkusRunConfigurationOptions;
+import io.conceptive.quarkus.plugin.runconfig.options.QuarkusMavenRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 import org.jetbrains.idea.maven.execution.*;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
@@ -25,7 +25,7 @@ import java.util.HashMap;
  *
  * @author w.glanzer, 21.04.2020
  */
-class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl> implements PanelWithAnchor
+class QuarkusMavenParametersSettingsEditorImpl extends SettingsEditor<QuarkusMavenRunConfigImpl> implements PanelWithAnchor
 {
 
   private final _WorkingDirectoryComponent workingDirComponent;
@@ -36,7 +36,7 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl> impleme
   private final LabeledComponent<JCheckBox> compileBeforeLaunch;
   private JComponent myAnchor;
 
-  public ParametersSettingsEditorImpl(@NotNull Project pProject)
+  public QuarkusMavenParametersSettingsEditorImpl(@NotNull Project pProject)
   {
     workingDirComponent = new _WorkingDirectoryComponent(pProject);
     vmOptions = new LabeledComponent<>();
@@ -60,9 +60,9 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl> impleme
   }
 
   @Override
-  protected void resetEditorFrom(@NotNull RunConfigImpl pImpl)
+  protected void resetEditorFrom(@NotNull QuarkusMavenRunConfigImpl pImpl)
   {
-    QuarkusRunConfigurationOptions options = pImpl.getOptions();
+    QuarkusMavenRunConfigurationOptions options = pImpl.getOptions();
     workingDirComponent.setValue(Strings.nullToEmpty(options.getWorkingDir()));
     vmOptions.getComponent().setText(Strings.nullToEmpty(options.getVmOptions()));
     jre.getComponent().setSelectedItem(projectSdksModel.findSdk(Strings.nullToEmpty(options.getJreName())));
@@ -72,9 +72,9 @@ class ParametersSettingsEditorImpl extends SettingsEditor<RunConfigImpl> impleme
   }
 
   @Override
-  protected void applyEditorTo(@NotNull RunConfigImpl pImpl)
+  protected void applyEditorTo(@NotNull QuarkusMavenRunConfigImpl pImpl)
   {
-    QuarkusRunConfigurationOptions options = pImpl.getOptions();
+    QuarkusMavenRunConfigurationOptions options = pImpl.getOptions();
     options.setWorkingDir(workingDirComponent.getValue());
     options.setVmOptions(vmOptions.getComponent().getText());
     Sdk selectedJDK = jre.getComponent().getSelectedJdk();

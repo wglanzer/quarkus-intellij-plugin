@@ -6,17 +6,17 @@ import com.intellij.openapi.components.BaseState;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.*;
 import io.conceptive.quarkus.plugin.runconfig.factory.IRunConfigFactory;
-import io.conceptive.quarkus.plugin.runconfig.options.QuarkusRunConfigurationOptions;
+import io.conceptive.quarkus.plugin.runconfig.options.QuarkusMavenRunConfigurationOptions;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
 /**
- * RunConfigType for QuarkusRunConfig
+ * RunConfigType for QuarkusRunConfig running with maven as build tool
  *
  * @author w.glanzer, 12.06.2019
  */
-public class QuarkusRunConfigType extends SimpleConfigurationType
+public class QuarkusMavenRunConfigType extends SimpleConfigurationType
 {
 
   public static final Icon ICON = IconLoader.getIcon("/io/conceptive/quarkus/plugin/quarkus_logo.svg");
@@ -24,7 +24,7 @@ public class QuarkusRunConfigType extends SimpleConfigurationType
   private static final String _NAME = "Quarkus";
   private static final Injector _INJECTOR = Guice.createInjector(new QuarkusRunConfigModule());
 
-  protected QuarkusRunConfigType()
+  protected QuarkusMavenRunConfigType()
   {
     super(_ID, _NAME, null, NotNullLazyValue.createValue(() -> ICON));
   }
@@ -33,14 +33,14 @@ public class QuarkusRunConfigType extends SimpleConfigurationType
   @Override
   public RunConfiguration createTemplateConfiguration(@NotNull Project pProject)
   {
-    return _INJECTOR.getInstance(IRunConfigFactory.class).createQuarkusRunConfiguration(pProject, this);
+    return _INJECTOR.getInstance(IRunConfigFactory.class).createQuarkusMavenRunConfiguration(pProject, this);
   }
 
   @Nullable
   @Override
   public Class<? extends BaseState> getOptionsClass()
   {
-    return QuarkusRunConfigurationOptions.class;
+    return QuarkusMavenRunConfigurationOptions.class;
   }
 
   @NotNull

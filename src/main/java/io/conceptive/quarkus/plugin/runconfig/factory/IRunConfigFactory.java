@@ -11,12 +11,12 @@ public interface IRunConfigFactory
 {
 
   /**
-   * Creates a new quarkus run configuration for a specific project
+   * Creates a new quarkus run configuration for a specific project (with Maven as build tool)
    *
    * @param pProject Project to create run config for
    * @return the run config
    */
   @NotNull
-  RunConfiguration createQuarkusRunConfiguration(@NotNull Project pProject, @NotNull ConfigurationFactory pFactory);
+  RunConfiguration createQuarkusMavenRunConfiguration(@NotNull Project pProject, @NotNull ConfigurationFactory pFactory);
 
 }

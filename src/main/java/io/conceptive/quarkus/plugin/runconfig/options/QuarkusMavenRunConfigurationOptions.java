@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author w.glanzer, 20.04.2020
  */
-public class QuarkusRunConfigurationOptions extends RunConfigurationOptions implements IQuarkusRunConfigurationOptions
+public class QuarkusMavenRunConfigurationOptions extends RunConfigurationOptions implements IQuarkusRunConfigurationOptions
 {
 
   public final StoredPropertyBase<String> workingDir;
@@ -21,7 +21,7 @@ public class QuarkusRunConfigurationOptions extends RunConfigurationOptions impl
   public final StoredPropertyBase<Boolean> passParentEnvParameters;
   public final StoredPropertyBase<Boolean> compileBeforeLaunch;
 
-  public QuarkusRunConfigurationOptions()
+  public QuarkusMavenRunConfigurationOptions()
   {
     workingDir = string("");
     workingDir.setName("workingDir");

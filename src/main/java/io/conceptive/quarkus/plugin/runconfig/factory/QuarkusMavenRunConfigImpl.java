@@ -10,23 +10,23 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.Project;
 import io.conceptive.quarkus.plugin.runconfig.executionfacade.IRunConfigExecutionFacade;
-import io.conceptive.quarkus.plugin.runconfig.options.QuarkusRunConfigurationOptions;
+import io.conceptive.quarkus.plugin.runconfig.options.QuarkusMavenRunConfigurationOptions;
 import io.conceptive.quarkus.plugin.util.NetUtility;
 import org.jetbrains.annotations.*;
 
 /**
- * Provides implementation for intellijs RunConfigurationBase.
+ * Provides implementation for intellijs RunConfigurationBase and Quarkus running with maven.
  *
  * @author w.glanzer, 12.06.2019
  */
-class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule>
+class QuarkusMavenRunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule>
 {
 
   @Inject
   private IRunConfigExecutionFacade executionFacade;
 
   @Inject
-  RunConfigImpl(@Assisted @NotNull Project pProject, @Assisted @NotNull ConfigurationFactory pConfigurationFactory)
+  QuarkusMavenRunConfigImpl(@Assisted @NotNull Project pProject, @Assisted @NotNull ConfigurationFactory pConfigurationFactory)
   {
     super(pProject, pConfigurationFactory, null);
   }
@@ -35,8 +35,8 @@ class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule>
   @Override
   public SettingsEditor<? extends RunConfiguration> getConfigurationEditor()
   {
-    SettingsEditorGroup<RunConfigImpl> group = new SettingsEditorGroup<>();
-    group.addEditor("Parameters", new ParametersSettingsEditorImpl(getProject()));
+    SettingsEditorGroup<QuarkusMavenRunConfigImpl> group = new SettingsEditorGroup<>();
+    group.addEditor("Parameters", new QuarkusMavenParametersSettingsEditorImpl(getProject()));
     return group;
   }
 
@@ -62,9 +62,9 @@ class RunConfigImpl extends RunConfigurationBase<JavaRunConfigurationModule>
 
   @NotNull
   @Override
-  public QuarkusRunConfigurationOptions getOptions()
+  public QuarkusMavenRunConfigurationOptions getOptions()
   {
-    return (QuarkusRunConfigurationOptions) super.getOptions();
+    return (QuarkusMavenRunConfigurationOptions) super.getOptions();
   }
 
 }
