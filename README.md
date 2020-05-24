@@ -11,13 +11,16 @@ Debug your quarkus applications without effort!
 
 :white_check_mark: Maven Plugin
 
+:white_check_mark: Gradle Plugin
+
 
 ## Features
 ### Quarkus Run Configuration Type
-This plugin adds a run configuration type, named "Quarkus". 
-It will execute the "clean compile quarkus:dev" maven goals in background and attach a new debugger instance via remote config if necessary.
+#### Build Tool: Maven
+This plugin adds a run configuration type, named "Quarkus (Maven)". 
+It will execute the "quarkus:dev" maven goal in background and attach a new debugger instance via remote config if necessary.
 
-![Quarkus Run Configuration Type](.github/docs/runconfig.png)
+![Quarkus Run Configuration Type](.github/docs/runconfig_maven.png)
 
 Working Directory: The root maven module to execute maven in
 
@@ -25,7 +28,25 @@ VM Options: A list of parameters which will be delegated to maven
 
 JRE: Maven will use this JRE to run
 
-Environment Variables: Variables that will be passed to maven execution
+Environment Variables: Variables that will be passed to maven execution environment
+
+Compile before launch: check this option, if you want to execute the "clean" and "compile" tasks before launching "quarkus:dev"
+
+#### Build Tool: Gradle
+This plugin adds a run configuration type, named "Quarkus (Gradle)" for gradle too.
+It will execute the "quarkusDev" gradle task in background and attach a new debugger isntance via remote config if necessary.
+
+![Quarkus Run Configuration Type](.github/docs/runconfig_gradle.png)
+
+Gradle Project: The root gradle project to start the quarkus build in
+
+VM Options: A list of parameters which will be delegated to gradle
+
+Arguments: Arguments that will be delegated to gradle
+
+Environment Variables: Variables that will be passed to gradle execution environment
+
+Compile before launch: check this option, if you want to execute the "clean" and "build" tasks before launching "quarkusDev"
 
 ### Debug your Quarkus applications
 ![Debug Window](.github/docs/debug.png)
