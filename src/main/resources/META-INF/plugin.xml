@@ -16,10 +16,9 @@
     and attaches a debugger if you want to. Debug your quarkus applications without effort!
   </description>
   <change-notes><![CDATA[ <ul>
-      <li>Added support for gradle</li>
+      <li>Added (preview) support for gradle</li>
       <li>Fixed message order, if messages arrive too early</li>
-      <li>Fixed change-notes in plugin.xml, so that they include complete notes</li>
-      <li>Fixed corrupted console logs on slow machines</li>
+      <li>Fixed broken console logs on slow machines</li>
     </ul> ]]></change-notes>
 
   <extensions defaultExtensionNs="com.intellij">
