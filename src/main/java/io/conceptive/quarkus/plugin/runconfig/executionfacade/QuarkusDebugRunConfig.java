@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
 import io.conceptive.quarkus.plugin.util.QuarkusUtility;
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 import org.jetbrains.annotations.*;
 
@@ -71,7 +72,7 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
       debuggerSettings.setTransport(USE_SOCKET_TRANSPORT ? 0 : 1);
     }
 
-    QuarkusDebugState state = new QuarkusDebugState(getProject(), createRemoteConnection(), AUTO_RESTART, buildProcessHandler, messageCache != null ? messageCache : List::of);
+    QuarkusDebugState state = new QuarkusDebugState(getProject(), createRemoteConnection(), AUTO_RESTART, buildProcessHandler, messageCache != null ? messageCache : ArrayList::new);
     stateRef = new WeakReference<>(state);
     return state;
   }
@@ -155,13 +156,13 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
             text = QuarkusUtility.getTextAfterDebugReadyString(text);
 
             // remove "first" linebreak
-            if (text.isBlank())
+            if (StringUtils.isBlank(text))
               text = null;
           }
 
           if (!Strings.isNullOrEmpty(text))
-            //noinspection unchecked
-            cache.add(Map.entry(text, outputType));
+            //noinspection unchecked,rawtypes
+            cache.add(new AbstractMap.SimpleImmutableEntry<>(text, outputType));
         }
       }
     }
@@ -171,7 +172,7 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
     {
       synchronized (cache)
       {
-        List<Map.Entry<String, Key<?>>> result = List.copyOf(cache);
+        List<Map.Entry<String, Key<?>>> result = new ArrayList<>(cache);
         invalidate();
         return result;
       }
