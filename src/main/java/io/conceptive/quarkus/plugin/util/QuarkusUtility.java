@@ -34,11 +34,11 @@ public class QuarkusUtility
   public static String getTextAfterDebugReadyString(@NotNull String pTest)
   {
     Matcher matcher = _DEBUGGER_READY_PATTERN.matcher(pTest);
-    if (matcher.matches())
+    if (matcher.find())
     {
       int endPos = matcher.end();
-      if (endPos + 1 < pTest.length())
-        return pTest.substring(endPos + 1).trim();
+      if (endPos < pTest.length())
+        return pTest.substring(endPos).trim();
       else if (endPos == pTest.length())
         return "";
     }
