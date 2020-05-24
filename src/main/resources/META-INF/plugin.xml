@@ -26,7 +26,6 @@
     <programRunner implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigRunner"/>
     <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusMavenRunConfigType"/>
     <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusGradleRunConfigType"/>
-    <externalSystemTaskNotificationListener implementation="io.conceptive.quarkus.plugin.runconfig.executionfacade.gradle.GradleNotificationListener"/>
   </extensions>
 
 </idea-plugin>

@@ -1,6 +1,8 @@
 package io.conceptive.quarkus.plugin.runconfig.executionfacade.gradle;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.model.task.*;
+import com.intellij.openapi.externalSystem.service.notification.ExternalSystemProgressNotificationManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 
@@ -15,6 +17,13 @@ public class GradleNotificationListener extends ExternalSystemTaskNotificationLi
 {
   private static final String _DEBUGGER_READY_STRING = "Listening for transport dt_socket at address";
   private static final Map<String, Runnable> executeOnFinish = new HashMap<>();
+
+  static
+  {
+    // Register to JetBrains NotificationManager, because of registering via plugin.xml does not work currently (?)
+    ApplicationManager.getApplication().getService(ExternalSystemProgressNotificationManager.class)
+        .addNotificationListener(new GradleNotificationListener());
+  }
 
   @Override
   public void onTaskOutput(@NotNull ExternalSystemTaskId id, @NotNull String text, boolean stdOut)
