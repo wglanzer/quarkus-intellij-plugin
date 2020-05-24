@@ -1,5 +1,6 @@
 package io.conceptive.quarkus.plugin.runconfig.executionfacade;
 
+import com.google.common.base.Strings;
 import com.intellij.debugger.impl.GenericDebuggerRunnerSettings;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.RunProfileState;
@@ -9,6 +10,7 @@ import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
+import io.conceptive.quarkus.plugin.util.QuarkusUtility;
 import org.jdom.Element;
 import org.jetbrains.annotations.*;
 
@@ -77,14 +79,19 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
   @Override
   public void reinit(@Nullable ProcessHandler pBuildProcessHandler, int pPort, @Nullable Runnable pOnRestart)
   {
-    if (messageCache != null)
-      messageCache.invalidate();
     buildProcessHandler = pBuildProcessHandler;
-    if (buildProcessHandler != null)
-      buildProcessHandler.addProcessListener((messageCache = new CachingProcessListener(buildProcessHandler)));
     onRestart = pOnRestart;
     PORT = String.valueOf(pPort);
     stateRef = null;
+  }
+
+  @Override
+  public void enableMessageCache(@NotNull ProcessHandler pBuildProcessHandler)
+  {
+    if (messageCache != null)
+      messageCache.invalidate();
+    messageCache = new CachingProcessListener(pBuildProcessHandler);
+    pBuildProcessHandler.addProcessListener(messageCache);
   }
 
   /**
@@ -142,7 +149,17 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
         if (handler != null)
         {
           String text = event.getText();
-          if (text != null)
+          if (text != null && cache.isEmpty())
+          {
+            // remove only first line, because the user already knows the port
+            text = QuarkusUtility.getTextAfterDebugReadyString(text);
+
+            // remove "first" linebreak
+            if (text.isBlank())
+              text = null;
+          }
+
+          if (!Strings.isNullOrEmpty(text))
             //noinspection unchecked
             cache.add(Map.entry(text, outputType));
         }

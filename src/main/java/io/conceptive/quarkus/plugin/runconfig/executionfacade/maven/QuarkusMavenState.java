@@ -1,5 +1,6 @@
 package io.conceptive.quarkus.plugin.runconfig.executionfacade.maven;
 
+import com.google.common.base.Strings;
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
@@ -7,6 +8,7 @@ import com.intellij.execution.runners.*;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.util.Key;
 import com.intellij.util.io.*;
+import io.conceptive.quarkus.plugin.util.QuarkusUtility;
 import org.jetbrains.annotations.*;
 
 import java.util.function.Consumer;
@@ -19,7 +21,6 @@ import java.util.function.Consumer;
  */
 class QuarkusMavenState extends JavaCommandLineState
 {
-  private static final String _DEBUGGER_READY_STRING = "Listening for transport dt_socket at address";
   private final QuarkusMavenRunConfig quarkusMavenRunConfig;
   private final boolean attachDebugger;
   private final Consumer<ProcessHandler> onReady;
@@ -85,19 +86,15 @@ class QuarkusMavenState extends JavaCommandLineState
     public void onTextAvailable(@NotNull ProcessEvent pProcessEvent, @NotNull Key pKey)
     {
       String text = pProcessEvent.getText();
-      if (text != null && text.contains(_DEBUGGER_READY_STRING))
+      if (text != null && QuarkusUtility.containsDebugReadyString(text))
       {
         processHandler.removeProcessListener(this);
         if (onReady != null)
           onReady.accept(processHandler);
 
-        int debugStringStart = text.indexOf(_DEBUGGER_READY_STRING) + _DEBUGGER_READY_STRING.length();
-        if (debugStringStart < text.length())
-        {
-          String remainingText = text.substring(debugStringStart);
-          if (!remainingText.trim().isEmpty())
-            processHandler.notifyTextAvailable(remainingText, pKey);
-        }
+        text = QuarkusUtility.getTextAfterDebugReadyString(text);
+        if (!Strings.isNullOrEmpty(text))
+          processHandler.notifyTextAvailable(text, pKey);
       }
     }
   }

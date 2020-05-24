@@ -3,6 +3,7 @@ package io.conceptive.quarkus.plugin.runconfig.executionfacade.gradle;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.model.task.*;
 import com.intellij.openapi.externalSystem.service.notification.ExternalSystemProgressNotificationManager;
+import io.conceptive.quarkus.plugin.util.QuarkusUtility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.gradle.util.GradleConstants;
 
@@ -15,7 +16,6 @@ import java.util.*;
  */
 public class GradleNotificationListener extends ExternalSystemTaskNotificationListenerAdapter
 {
-  private static final String _DEBUGGER_READY_STRING = "Listening for transport dt_socket at address";
   private static final Map<String, Runnable> executeOnFinish = new HashMap<>();
 
   static
@@ -30,7 +30,7 @@ public class GradleNotificationListener extends ExternalSystemTaskNotificationLi
   {
     synchronized (executeOnFinish)
     {
-      if (id.getProjectSystemId().equals(GradleConstants.SYSTEM_ID) && text.contains(_DEBUGGER_READY_STRING))
+      if (id.getProjectSystemId().equals(GradleConstants.SYSTEM_ID) && QuarkusUtility.containsDebugReadyString(text))
       {
         Runnable onReady = executeOnFinish.get(id.getIdeProjectId());
         if (onReady != null)
