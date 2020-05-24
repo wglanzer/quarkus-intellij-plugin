@@ -39,7 +39,7 @@ class QuarkusGradleState extends ExternalSystemRunnableState
     if (result != null)
       GradleNotificationListener.addHandler(ExternalSystemTaskId.getProjectId(project), () -> {
         if (attachDebugger)
-          ProcessHandlerUtility.detachProcessSilently(result.getProcessHandler());
+          ProcessHandlerUtility.detachProcessSilently(project, result.getProcessHandler());
 
         // Delegate Handler
         if (onReady != null)
