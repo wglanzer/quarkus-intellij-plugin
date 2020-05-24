@@ -37,13 +37,17 @@ public abstract class AbstractExecutionFacadeImpl implements IRunConfigExecution
     if (buildRunConfig == null)
       buildRunConfig = createBuildConfig(pSource.getProject());
     buildRunConfig.setName(pSource.getName());
-    buildRunConfig.reinit(pDebugPort, pOptions, (pProcessHandle) -> ApplicationManager.getApplication().invokeLater(() -> {
+    buildRunConfig.reinit(pDebugPort, pOptions, (pProcessHandle) -> {
       if (debugRunConfig == null)
         debugRunConfig = createDebugConfig(pSource.getProject());
+      debugRunConfig.enableMessageCache(pProcessHandle);
       debugRunConfig.setName(pSource.getName());
-      debugRunConfig.reinit(pProcessHandle, pDebugPort, () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
-      execute(pSettings, pSource, debugRunConfig, DefaultDebugExecutor.getDebugExecutorInstance());
-    }), () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
+
+      ApplicationManager.getApplication().invokeLater(() -> {
+        debugRunConfig.reinit(pProcessHandle, pDebugPort, () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
+        execute(pSettings, pSource, debugRunConfig, DefaultDebugExecutor.getDebugExecutorInstance());
+      });
+    }, () -> ExecutionUtil.runConfiguration(pSettings, DefaultDebugExecutor.getDebugExecutorInstance()));
     execute(pSettings, pSource, buildRunConfig, DefaultRunExecutor.getRunExecutorInstance());
   }
 

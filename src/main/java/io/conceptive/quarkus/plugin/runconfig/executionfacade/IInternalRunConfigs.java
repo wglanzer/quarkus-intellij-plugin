@@ -23,6 +23,14 @@ public interface IInternalRunConfigs
      * @param pOnRestart           Runnable that gets called, if this runconfig gets restartet
      */
     void reinit(@Nullable ProcessHandler pBuildProcessHandler, int pPort, @Nullable Runnable pOnRestart);
+
+    /**
+     * Enables the message cache on the given process handler, so that all messages that appear in the given handler
+     * will be cached and will retain in memory to process afterwards
+     *
+     * @param pBuildProcessHandler Handler to attach to
+     */
+    void enableMessageCache(@NotNull ProcessHandler pBuildProcessHandler);
   }
 
   interface IBuildRunConfig extends RunConfiguration
