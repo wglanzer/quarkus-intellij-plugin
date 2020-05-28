@@ -16,9 +16,7 @@
     and attaches a debugger if you want to. Debug your quarkus applications without effort!
   </description>
   <change-notes><![CDATA[ <ul>
-      <li>Added (preview) support for gradle</li>
-      <li>Fixed message order, if messages arrive too early</li>
-      <li>Fixed broken console logs on slow machines</li>
+      <li>Gradle intergration should run 'assemble' instead of 'build', because triggering unit tests is not necessary for quarkusDev</li>
     </ul> ]]></change-notes>
 
   <extensions defaultExtensionNs="com.intellij">

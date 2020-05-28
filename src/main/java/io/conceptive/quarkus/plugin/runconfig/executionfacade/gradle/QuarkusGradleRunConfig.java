@@ -143,7 +143,7 @@ class QuarkusGradleRunConfig extends GradleRunConfiguration implements IInternal
     if (options.getCompileBeforeLaunch())
     {
       tasks.add("clean");
-      tasks.add("build");
+      tasks.add("assemble");
     }
     tasks.add("quarkusDev");
     return tasks;
