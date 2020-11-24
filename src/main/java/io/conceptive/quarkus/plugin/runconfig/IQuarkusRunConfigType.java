@@ -10,5 +10,5 @@ import javax.swing.*;
  */
 public interface IQuarkusRunConfigType extends ConfigurationType
 {
-  Icon ICON = IconLoader.getIcon("/io/conceptive/quarkus/plugin/quarkus_logo.svg");
+  Icon ICON = IconLoader.getIcon("/io/conceptive/quarkus/plugin/quarkus_logo.svg", IQuarkusRunConfigType.class);
 }
