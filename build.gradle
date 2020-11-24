@@ -12,7 +12,7 @@ repositories {
 }
 
 intellij {
-    pluginName = "QuarkusIntegration"
+    pluginName = "QuarkusRunConfigs"
     plugins = ["maven", "gradle", "java"]
     updateSinceUntilBuild = false
 }
