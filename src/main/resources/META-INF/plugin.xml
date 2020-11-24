@@ -16,7 +16,9 @@
     and attaches a debugger if you want to. Debug your quarkus applications without effort!
   </description>
   <change-notes><![CDATA[ <ul>
-      <li>Gradle intergration should run 'assemble' instead of 'build', because triggering unit tests is not necessary for quarkusDev</li>
+      <li>chore: renamed to "Quarkus Run Config"</li>
+      <li>chore: changed plugin coordinates and icon</li>
+      <li>chore: build with JDK11</li>
     </ul> ]]></change-notes>
 
   <extensions defaultExtensionNs="com.intellij">
