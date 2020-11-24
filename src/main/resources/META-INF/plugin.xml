@@ -1,6 +1,6 @@
 <idea-plugin>
 
-  <id>io.conceptive.quarkus.plugin</id>
+  <id>io.conceptive.quarkus-intellij-plugin</id>
   <name>Quarkus Run Configs</name>
   <vendor email="w.glanzer@conceptive.io">Werner Glanzer</vendor>
 
