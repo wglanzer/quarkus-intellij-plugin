@@ -3,11 +3,9 @@ package io.conceptive.quarkus.plugin.runconfig.factory;
 import com.google.common.base.Strings;
 import com.intellij.execution.configuration.EnvironmentVariablesComponent;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.externalSystem.service.ui.ExternalSystemJdkComboBox;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.*;
 import com.intellij.ui.*;
 import com.intellij.util.ui.UIUtil;
@@ -30,8 +28,7 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
 
   private final _WorkingDirectoryComponent workingDirComponent;
   private final LabeledComponent<RawCommandLineEditor> vmOptions;
-  private final LabeledComponent<JdkComboBox> jre;
-  private final ProjectSdksModel projectSdksModel;
+  private final LabeledComponent<ExternalSystemJdkComboBox> jre;
   private final EnvironmentVariablesComponent envVariables;
   private final LabeledComponent<JCheckBox> compileBeforeLaunch;
   private JComponent myAnchor;
@@ -43,10 +40,8 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     vmOptions.setComponent(new RawCommandLineEditor());
     vmOptions.setLabelLocation(BorderLayout.WEST);
     vmOptions.setText("VM Options");
-    projectSdksModel = new ProjectSdksModel();
-    projectSdksModel.syncSdks();
     jre = new LabeledComponent<>();
-    jre.setComponent(new JdkComboBox(pProject, projectSdksModel, null, null, null, null));
+    jre.setComponent(new ExternalSystemJdkComboBox(pProject));
     jre.setLabelLocation(BorderLayout.WEST);
     jre.setText("JRE");
     envVariables = new EnvironmentVariablesComponent();
@@ -65,7 +60,7 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     MavenRunConfigurationOptions options = pImpl.getOptions();
     workingDirComponent.setValue(Strings.nullToEmpty(options.getWorkingDir()));
     vmOptions.getComponent().setText(Strings.nullToEmpty(options.getVmOptions()));
-    jre.getComponent().setSelectedItem(projectSdksModel.findSdk(Strings.nullToEmpty(options.getJreName())));
+    jre.getComponent().refreshData(options.getJreName());
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
     envVariables.setPassParentEnvs(options.getPassParentEnvParameters());
     compileBeforeLaunch.getComponent().setSelected(options.getCompileBeforeLaunch());
@@ -77,9 +72,7 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     MavenRunConfigurationOptions options = pImpl.getOptions();
     options.setWorkingDir(workingDirComponent.getValue());
     options.setVmOptions(vmOptions.getComponent().getText());
-    Sdk selectedJDK = jre.getComponent().getSelectedJdk();
-    if (selectedJDK != null)
-      options.setJreName(selectedJDK.getName());
+    options.setJreName(jre.getComponent().getSelectedValue());
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());
     options.setCompileBeforeLaunch(compileBeforeLaunch.getComponent().isSelected());
