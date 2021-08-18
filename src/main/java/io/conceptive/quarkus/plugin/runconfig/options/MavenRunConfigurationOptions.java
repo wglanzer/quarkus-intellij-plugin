@@ -20,6 +20,7 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
   public final StoredPropertyBase<Map<String, String>> envVariables;
   public final StoredPropertyBase<Boolean> passParentEnvParameters;
   public final StoredPropertyBase<Boolean> compileBeforeLaunch;
+  public final StoredPropertyBase<String> mavenRunProfile;
 
   public MavenRunConfigurationOptions()
   {
@@ -35,6 +36,8 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
     passParentEnvParameters.setName("passParentEnvParameters");
     compileBeforeLaunch = property(true);
     compileBeforeLaunch.setName("compileBeforeLaunch");
+    mavenRunProfile = string("")
+    mavenRunProfile.setName("mavenRunProfile")
   }
 
   @Override
@@ -78,6 +81,18 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
   public void setJreName(@Nullable String pJreName)
   {
     jreName.setValue(this, pJreName);
+  }
+  
+  @Nullable
+  @Override
+  public String getMavenRunProfile()
+  {
+    return mavenRunProfile.getValue(this);
+  }
+
+  public void setMavenRunProfile(@Nullable String pMavenRunProfile)
+  {
+    mavenRunProfile.setValue(this, pMavenRunProfile);
   }
 
   @Nullable
