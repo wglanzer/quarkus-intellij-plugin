@@ -3,9 +3,11 @@
 ![build](https://github.com/conceptivesolutions/quarkus-intellij-plugin/workflows/build/badge.svg)
 ![version](https://img.shields.io/github/v/release/wglanzer/quarkus-intellij-plugin)
 
+<!-- Plugin description -->
 This plugin adds features to JetBrains IntelliJ IDEA to integrate [quarkus.io](http://quarkus.io) a lot better and make it behave like
 a "normal IntelliJ IDEA application". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.
-Debug your quarkus applications without effort!  
+Debug your quarkus applications without effort!
+<!-- Plugin description end -->
 
 :white_check_mark: IntelliJ Version 2020.1 ( https://plugins.jetbrains.com/plugin/14242-quarkus-integration )
 

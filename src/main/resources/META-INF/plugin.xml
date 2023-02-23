@@ -8,19 +8,6 @@
   <depends>com.intellij.gradle</depends>
   <depends>org.jetbrains.idea.maven</depends>
 
-  <idea-version since-build="201.6487.11"/>
-
-  <description>
-    This plugin adds features to JetBrains IntelliJ IDEA to integrate quarkus.io a lot better and make it behave like
-    a regular IntelliJ IDEA application. This means that this plugin will execute all necessary build steps automatically
-    and attaches a debugger if you want to. Debug your quarkus applications without effort!
-  </description>
-  <change-notes><![CDATA[ <ul>
-      <li>chore: renamed to "Quarkus Run Config"</li>
-      <li>chore: changed plugin coordinates and icon</li>
-      <li>chore: build with JDK11</li>
-    </ul> ]]></change-notes>
-
   <extensions defaultExtensionNs="com.intellij">
     <programRunner implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusRunConfigRunner"/>
     <configurationType implementation="io.conceptive.quarkus.plugin.runconfig.QuarkusMavenRunConfigType"/>
