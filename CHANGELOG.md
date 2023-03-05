@@ -1,5 +1,9 @@
 # Quarkus Run Configs
 
+## [1.2.0]
+### Changed
+- Rebuilt plugin to be ready for IDEA 2023.1
+
 ## [1.1.2]
 ### Changed
 - Renamed Plugin to "Quarkus Run Config"

@@ -128,7 +128,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration implements IInternalRu
   @NotNull
   private static JavaParameters _removeMavenEventListener(@NotNull JavaParameters pParameters)
   {
-    String listenerPath = MavenServerManager.getMavenEventListener().getAbsolutePath();
+    String listenerPath = MavenServerManager.getInstance().getMavenEventListener().getAbsolutePath();
     String extClassPath = pParameters.getVMParametersList().getPropertyValue(MavenServerEmbedder.MAVEN_EXT_CLASS_PATH);
     if (extClassPath != null && extClassPath.contains(listenerPath))
       pParameters.getVMParametersList().replaceOrAppend("-D" + MavenServerEmbedder.MAVEN_EXT_CLASS_PATH, extClassPath.replace(listenerPath, ""));
