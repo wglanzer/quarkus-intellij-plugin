@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2023-03-05
+
 ### Added
 - Added support for IntelliJ 2023.1 (231.7864.76+)
 
@@ -31,7 +33,8 @@
 ### Fixed
 - Removed unnecessary "ARTIFACT_RESOLVING" and "ARTIFACT_RESOLVED" logs from maven output
 
-[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.0.3...v1.1.0
