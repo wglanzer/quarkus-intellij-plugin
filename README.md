@@ -4,7 +4,7 @@
 ![version](https://img.shields.io/github/v/release/wglanzer/quarkus-intellij-plugin)
 
 <!-- Plugin description -->
-This plugin adds features to JetBrains IntelliJ IDEA to integrate [quarkus.io](http://quarkus.io) a lot better and make it behave like
+This plugin adds features to JetBrains IntelliJ IDEA to integrate [quarkus.io](https://quarkus.io) a lot better and make it behave like
 a "normal IntelliJ IDEA application". This means that this plugin will execute all necessary build steps automatically and attaches a debugger if you want to.
 Debug your quarkus applications without effort!
 <!-- Plugin description end -->
