@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Part I: Start Quarkus instance via Maven goal
@@ -82,6 +83,8 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration implements IInternalRu
   {
     MavenRunnerParameters params = new MavenRunnerParameters();
     params.setGoals(_getGoals());
+    params.setProfilesMap(options.getProfiles().stream()
+                              .collect(Collectors.toMap(pName -> pName, pName -> true)));
 
     String workingDir = options.getWorkingDir();
     if (workingDir != null)
@@ -115,7 +118,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration implements IInternalRu
       goals.add("clean");
       goals.add("compile");
     }
-    goals.add("quarkus:dev");
+    goals.addAll(options.getGoals());
     return goals;
   }
 

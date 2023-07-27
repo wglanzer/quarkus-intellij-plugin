@@ -2,9 +2,10 @@ package io.conceptive.quarkus.plugin.runconfig.options;
 
 import com.intellij.execution.configurations.RunConfigurationOptions;
 import com.intellij.openapi.components.StoredPropertyBase;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.util.execution.ParametersListUtil;
+import org.jetbrains.annotations.*;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Serializable options for quarkus run configuration
@@ -16,6 +17,8 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
 
   public final StoredPropertyBase<String> workingDir;
   public final StoredPropertyBase<String> vmOptions;
+  public final StoredPropertyBase<String> goals;
+  public final StoredPropertyBase<String> profiles;
   public final StoredPropertyBase<String> jreName;
   public final StoredPropertyBase<Map<String, String>> envVariables;
   public final StoredPropertyBase<Boolean> passParentEnvParameters;
@@ -27,6 +30,10 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
     workingDir.setName("workingDir");
     vmOptions = string("");
     vmOptions.setName("vmOptions");
+    goals = string("quarkus:dev");
+    goals.setName("goals");
+    profiles = string("");
+    profiles.setName("profiles");
     jreName = string("");
     jreName.setName("jreName");
     envVariables = map();
@@ -112,5 +119,35 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
   public void setCompileBeforeLaunch(boolean pCompile)
   {
     compileBeforeLaunch.setValue(this, pCompile);
+  }
+
+  @NotNull
+  @Override
+  public List<String> getGoals()
+  {
+    String value = goals.getValue(this);
+    if(value == null)
+      return List.of();
+    return ParametersListUtil.parse(value);
+  }
+
+  public void setGoals(@Nullable List<String> pProfiles)
+  {
+    goals.setValue(this, pProfiles == null ? null : ParametersListUtil.join(pProfiles));
+  }
+
+  @NotNull
+  @Override
+  public List<String> getProfiles()
+  {
+    String value = profiles.getValue(this);
+    if(value == null)
+      return List.of();
+    return ParametersListUtil.parse(value);
+  }
+
+  public void setProfiles(@Nullable List<String> pProfiles)
+  {
+    profiles.setValue(this, pProfiles == null ? null : ParametersListUtil.join(pProfiles));
   }
 }

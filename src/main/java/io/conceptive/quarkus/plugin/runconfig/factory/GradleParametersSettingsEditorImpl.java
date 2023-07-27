@@ -10,6 +10,7 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.ui.*;
+import com.intellij.util.execution.ParametersListUtil;
 import com.intellij.util.ui.UIUtil;
 import io.conceptive.quarkus.plugin.runconfig.options.GradleRunConfigurationOptions;
 import org.jetbrains.annotations.*;
@@ -29,6 +30,8 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
 
   private final LabeledComponent<ExternalProjectPathField> workingDirComponent;
   private final LabeledComponent<RawCommandLineEditor> vmOptions;
+  private final LabeledComponent<RawCommandLineEditor> tasks;
+  private final LabeledComponent<SimpleColoredComponent> tasksHint;
   private final LabeledComponent<RawCommandLineEditor> arguments;
   private final EnvironmentVariablesComponent envVariables;
   private final LabeledComponent<JCheckBox> compileBeforeLaunch;
@@ -52,6 +55,14 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     vmOptions.setComponent(new RawCommandLineEditor());
     vmOptions.setLabelLocation(BorderLayout.WEST);
     vmOptions.setText("VM Options");
+    tasks = new LabeledComponent<>();
+    tasks.setComponent(new RawCommandLineEditor());
+    tasks.setLabelLocation(BorderLayout.WEST);
+    tasks.setText("Tasks");
+    tasksHint = new LabeledComponent<>();
+    tasksHint.setLabelLocation(BorderLayout.WEST);
+    tasksHint.setComponent(new SimpleColoredComponent());
+    tasksHint.getComponent().append("Separate gradle tasks with spaces. Default: \"quarkusDev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
     arguments = new LabeledComponent<>();
     arguments.setComponent(new RawCommandLineEditor());
     arguments.setLabelLocation(BorderLayout.WEST);
@@ -63,7 +74,7 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     compileBeforeLaunch.setComponent(new JCheckBox());
     compileBeforeLaunch.setText("Compile before launch");
     compileBeforeLaunch.setLabelLocation(BorderLayout.WEST);
-    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, arguments, envVariables, compileBeforeLaunch);
+    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, tasks, tasksHint, arguments, envVariables, compileBeforeLaunch);
   }
 
   @Override
@@ -72,6 +83,7 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     GradleRunConfigurationOptions options = pImpl.getOptions();
     workingDirComponent.getComponent().setText(Strings.nullToEmpty(options.getWorkingDir()));
     vmOptions.getComponent().setText(Strings.nullToEmpty(options.getVmOptions()));
+    tasks.getComponent().setText(ParametersListUtil.join(options.getGoals()));
     arguments.getComponent().setText(Strings.nullToEmpty(options.getArguments()));
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
     envVariables.setPassParentEnvs(options.getPassParentEnvParameters());
@@ -84,6 +96,7 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     GradleRunConfigurationOptions options = pImpl.getOptions();
     options.setWorkingDir(workingDirComponent.getComponent().getText());
     options.setVmOptions(vmOptions.getComponent().getText());
+    options.setGoals(ParametersListUtil.parse(tasks.getComponent().getText()));
     options.setArguments(arguments.getComponent().getText());
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());
@@ -94,16 +107,20 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
   @Override
   protected JComponent createEditor()
   {
+    int gap = 5;
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(workingDirComponent);
-    panel.add(Box.createVerticalStrut(4));
+    panel.add(Box.createVerticalStrut(gap));
     panel.add(vmOptions);
-    panel.add(Box.createVerticalStrut(4));
+    panel.add(Box.createVerticalStrut(gap));
+    panel.add(tasks);
+    panel.add(tasksHint);
+    panel.add(Box.createVerticalStrut(gap));
     panel.add(arguments);
-    panel.add(Box.createVerticalStrut(4));
+    panel.add(Box.createVerticalStrut(gap));
     panel.add(envVariables);
-    panel.add(Box.createVerticalStrut(4));
+    panel.add(Box.createVerticalStrut(gap + 2));
     panel.add(compileBeforeLaunch);
     return panel;
   }
@@ -120,6 +137,8 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     myAnchor = anchor;
     workingDirComponent.setAnchor(anchor);
     vmOptions.setAnchor(anchor);
+    tasks.setAnchor(anchor);
+    tasksHint.setAnchor(anchor);
     arguments.setAnchor(anchor);
     envVariables.setAnchor(anchor);
     compileBeforeLaunch.setAnchor(anchor);

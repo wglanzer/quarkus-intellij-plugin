@@ -1,8 +1,8 @@
 package io.conceptive.quarkus.plugin.runconfig.options;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Information about all set options in a single run configuration
@@ -29,4 +29,10 @@ public interface IQuarkusRunConfigurationOptions
   boolean getPassParentEnvParameters();
 
   boolean getCompileBeforeLaunch();
+
+  @NotNull
+  List<String> getGoals();
+
+  @NotNull
+  List<String> getProfiles();
 }
