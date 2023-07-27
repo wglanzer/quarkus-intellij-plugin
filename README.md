@@ -28,11 +28,13 @@ Working Directory: The root maven module to execute maven in
 
 VM Options: A list of parameters which will be delegated to maven
 
+Goals: A whitespace separated list of goals that should be executed on quarkus startup. Make sure, that you include "quarkus:dev" if you want to debug your service.
+
+Profiles: A whitespace separated list of profiles that should be used on quarkus startup.
+
 JRE: Maven will use this JRE to run
 
 Environment Variables: Variables that will be passed to maven execution environment
-
-Compile before launch: check this option, if you want to execute the "clean" and "compile" tasks before launching "quarkus:dev"
 
 #### Build Tool: Gradle
 This plugin adds a run configuration type, named "Quarkus (Gradle)" for gradle too.
@@ -44,11 +46,11 @@ Gradle Project: The root gradle project to start the quarkus build in
 
 VM Options: A list of parameters which will be delegated to gradle
 
+Tasks: A whitespace separated list of tasks that should be executed on quarkus startup. Make sure, that you include "quarkusDev" if you want to debug your service.
+
 Arguments: Arguments that will be delegated to gradle
 
 Environment Variables: Variables that will be passed to gradle execution environment
-
-Compile before launch: check this option, if you want to execute the "clean" and "build" tasks before launching "quarkusDev"
 
 ### Debug your Quarkus applications
 ![Debug Window](.github/docs/debug.png)

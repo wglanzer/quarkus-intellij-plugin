@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added support for custom quarkus goals (maven), profiles (maven) and tasks (gradle) in run configurations
+- Removed "compileBeforeLaunch" in run configurations, because it is more transparent to use the newly added custom settings
+
 ## [1.2.0] - 2023-03-05
 
 ### Added
