@@ -82,7 +82,7 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration implements IInternalRu
   public JavaParameters createJavaParameters(@Nullable Project project) throws ExecutionException
   {
     MavenRunnerParameters params = new MavenRunnerParameters();
-    params.setGoals(_getGoals());
+    params.setGoals(options.getGoals());
     params.setProfilesMap(options.getProfiles().stream()
                               .collect(Collectors.toMap(pName -> pName, pName -> true)));
 
@@ -104,22 +104,6 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration implements IInternalRu
     rsettings.setMavenProperties(props);
 
     return _removeMavenEventListener(MavenExternalParameters.createJavaParameters(getProject(), params, null, rsettings, this));
-  }
-
-  /**
-   * @return goals to be executed
-   */
-  @NotNull
-  private List<String> _getGoals()
-  {
-    List<String> goals = new ArrayList<>();
-    if (options.getCompileBeforeLaunch())
-    {
-      goals.add("clean");
-      goals.add("compile");
-    }
-    goals.addAll(options.getGoals());
-    return goals;
   }
 
   /**

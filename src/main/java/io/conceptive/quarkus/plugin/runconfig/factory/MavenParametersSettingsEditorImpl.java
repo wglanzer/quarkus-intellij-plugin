@@ -35,7 +35,6 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
   private final LabeledComponent<SimpleColoredComponent> profilesHint;
   private final LabeledComponent<SdkComboBox> jre;
   private final EnvironmentVariablesComponent envVariables;
-  private final LabeledComponent<JCheckBox> compileBeforeLaunch;
   private JComponent myAnchor;
 
   public MavenParametersSettingsEditorImpl(@NotNull Project pProject)
@@ -52,7 +51,7 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     goalsHint = new LabeledComponent<>();
     goalsHint.setLabelLocation(BorderLayout.WEST);
     goalsHint.setComponent(new SimpleColoredComponent());
-    goalsHint.getComponent().append("Separate maven goals with spaces. Default: \"quarkus:dev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
+    goalsHint.getComponent().append("Separate maven goals with spaces. Default: \"clean compile quarkus:dev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
     profiles = new LabeledComponent<>();
     profiles.setComponent(new RawCommandLineEditor());
     profiles.setLabelLocation(BorderLayout.WEST);
@@ -68,11 +67,7 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     envVariables = new EnvironmentVariablesComponent();
     envVariables.setText("Environment Variables");
     envVariables.setLabelLocation(BorderLayout.WEST);
-    compileBeforeLaunch = new LabeledComponent<>();
-    compileBeforeLaunch.setComponent(new JCheckBox());
-    compileBeforeLaunch.setText("Compile before launch");
-    compileBeforeLaunch.setLabelLocation(BorderLayout.WEST);
-    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, goals, goalsHint, profiles, profilesHint, jre, envVariables, compileBeforeLaunch);
+    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, goals, goalsHint, profiles, profilesHint, jre, envVariables);
   }
 
   @Override
@@ -87,7 +82,6 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
       jre.getComponent().setSelectedSdk(options.getJreName());
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
     envVariables.setPassParentEnvs(options.getPassParentEnvParameters());
-    compileBeforeLaunch.getComponent().setSelected(options.getCompileBeforeLaunch());
   }
 
   @Override
@@ -101,7 +95,6 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     options.setJreName(jre.getComponent().getSelectedSdk() != null ? jre.getComponent().getSelectedSdk().getName() : null);
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());
-    options.setCompileBeforeLaunch(compileBeforeLaunch.getComponent().isSelected());
   }
 
   @NotNull
@@ -124,8 +117,6 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     panel.add(jre);
     panel.add(Box.createVerticalStrut(gap));
     panel.add(envVariables);
-    panel.add(Box.createVerticalStrut(gap + 2));
-    panel.add(compileBeforeLaunch);
     return panel;
   }
 
@@ -147,7 +138,6 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     profilesHint.setAnchor(anchor);
     jre.setAnchor(anchor);
     envVariables.setAnchor(anchor);
-    compileBeforeLaunch.setAnchor(anchor);
   }
 
   /**

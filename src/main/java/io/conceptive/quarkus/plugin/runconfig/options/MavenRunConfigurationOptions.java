@@ -22,7 +22,6 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
   public final StoredPropertyBase<String> jreName;
   public final StoredPropertyBase<Map<String, String>> envVariables;
   public final StoredPropertyBase<Boolean> passParentEnvParameters;
-  public final StoredPropertyBase<Boolean> compileBeforeLaunch;
 
   public MavenRunConfigurationOptions()
   {
@@ -30,7 +29,7 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
     workingDir.setName("workingDir");
     vmOptions = string("");
     vmOptions.setName("vmOptions");
-    goals = string("quarkus:dev");
+    goals = string("clean compile quarkus:dev");
     goals.setName("goals");
     profiles = string("");
     profiles.setName("profiles");
@@ -40,8 +39,6 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
     envVariables.setName("envVariables");
     passParentEnvParameters = property(true);
     passParentEnvParameters.setName("passParentEnvParameters");
-    compileBeforeLaunch = property(true);
-    compileBeforeLaunch.setName("compileBeforeLaunch");
   }
 
   @Override
@@ -108,17 +105,6 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
   public void setPassParentEnvParameters(boolean pPass)
   {
     passParentEnvParameters.setValue(this, pPass);
-  }
-
-  @Override
-  public boolean getCompileBeforeLaunch()
-  {
-    return compileBeforeLaunch.getValue(this);
-  }
-
-  public void setCompileBeforeLaunch(boolean pCompile)
-  {
-    compileBeforeLaunch.setValue(this, pCompile);
   }
 
   @NotNull

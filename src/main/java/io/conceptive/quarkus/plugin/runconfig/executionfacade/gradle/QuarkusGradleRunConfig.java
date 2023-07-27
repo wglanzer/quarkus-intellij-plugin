@@ -20,7 +20,7 @@ import org.jetbrains.plugins.gradle.util.GradleConstants;
 import javax.swing.*;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -111,7 +111,7 @@ class QuarkusGradleRunConfig extends GradleRunConfiguration implements IInternal
       if (env != null)
         settings.setEnv(env);
       settings.setPassParentEnvs(options.getPassParentEnvParameters());
-      settings.setTaskNames(_getTasks());
+      settings.setTaskNames(options.getGoals());
 
       // Set
       Field mySettings = ExternalSystemRunConfiguration.class.getDeclaredField("mySettings");
@@ -131,22 +131,6 @@ class QuarkusGradleRunConfig extends GradleRunConfiguration implements IInternal
     if (attachDebugger)
       return "-Ddebug=" + port + " " + base;
     return base;
-  }
-
-  /**
-   * @return tasks to be executed
-   */
-  @NotNull
-  private List<String> _getTasks()
-  {
-    List<String> tasks = new ArrayList<>();
-    if (options.getCompileBeforeLaunch())
-    {
-      tasks.add("clean");
-      tasks.add("assemble");
-    }
-    tasks.addAll(options.getGoals());
-    return tasks;
   }
 
 }

@@ -20,7 +20,6 @@ public class GradleRunConfigurationOptions extends RunConfigurationOptions imple
   public final StoredPropertyBase<String> arguments;
   public final StoredPropertyBase<Map<String, String>> envVariables;
   public final StoredPropertyBase<Boolean> passParentEnvParameters;
-  public final StoredPropertyBase<Boolean> compileBeforeLaunch;
 
   public GradleRunConfigurationOptions()
   {
@@ -28,7 +27,7 @@ public class GradleRunConfigurationOptions extends RunConfigurationOptions imple
     workingDir.setName("workingDir");
     vmOptions = string("");
     vmOptions.setName("vmOptions");
-    goals = string("quarkusDev");
+    goals = string("clean assemble quarkusDev");
     goals.setName("goals");
     arguments = string("");
     arguments.setName("arguments");
@@ -36,8 +35,6 @@ public class GradleRunConfigurationOptions extends RunConfigurationOptions imple
     envVariables.setName("envVariables");
     passParentEnvParameters = property(true);
     passParentEnvParameters.setName("passParentEnvParameters");
-    compileBeforeLaunch = property(true);
-    compileBeforeLaunch.setName("compileBeforeLaunch");
   }
 
   @Override
@@ -104,17 +101,6 @@ public class GradleRunConfigurationOptions extends RunConfigurationOptions imple
   public void setPassParentEnvParameters(boolean pPass)
   {
     passParentEnvParameters.setValue(this, pPass);
-  }
-
-  @Override
-  public boolean getCompileBeforeLaunch()
-  {
-    return compileBeforeLaunch.getValue(this);
-  }
-
-  public void setCompileBeforeLaunch(boolean pCompile)
-  {
-    compileBeforeLaunch.setValue(this, pCompile);
   }
 
   @NotNull

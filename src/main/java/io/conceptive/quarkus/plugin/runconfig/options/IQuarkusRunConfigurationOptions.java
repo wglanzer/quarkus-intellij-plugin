@@ -28,8 +28,6 @@ public interface IQuarkusRunConfigurationOptions
 
   boolean getPassParentEnvParameters();
 
-  boolean getCompileBeforeLaunch();
-
   @NotNull
   List<String> getGoals();
 

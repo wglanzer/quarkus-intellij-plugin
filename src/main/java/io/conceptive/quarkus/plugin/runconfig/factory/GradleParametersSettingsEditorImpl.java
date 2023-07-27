@@ -34,7 +34,6 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
   private final LabeledComponent<SimpleColoredComponent> tasksHint;
   private final LabeledComponent<RawCommandLineEditor> arguments;
   private final EnvironmentVariablesComponent envVariables;
-  private final LabeledComponent<JCheckBox> compileBeforeLaunch;
   private JComponent myAnchor;
 
   public GradleParametersSettingsEditorImpl(@NotNull Project pProject)
@@ -62,7 +61,7 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     tasksHint = new LabeledComponent<>();
     tasksHint.setLabelLocation(BorderLayout.WEST);
     tasksHint.setComponent(new SimpleColoredComponent());
-    tasksHint.getComponent().append("Separate gradle tasks with spaces. Default: \"quarkusDev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
+    tasksHint.getComponent().append("Separate gradle tasks with spaces. Default: \"clean assemble quarkusDev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
     arguments = new LabeledComponent<>();
     arguments.setComponent(new RawCommandLineEditor());
     arguments.setLabelLocation(BorderLayout.WEST);
@@ -70,11 +69,7 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     envVariables = new EnvironmentVariablesComponent();
     envVariables.setText("Environment Variables");
     envVariables.setLabelLocation(BorderLayout.WEST);
-    compileBeforeLaunch = new LabeledComponent<>();
-    compileBeforeLaunch.setComponent(new JCheckBox());
-    compileBeforeLaunch.setText("Compile before launch");
-    compileBeforeLaunch.setLabelLocation(BorderLayout.WEST);
-    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, tasks, tasksHint, arguments, envVariables, compileBeforeLaunch);
+    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, tasks, tasksHint, arguments, envVariables);
   }
 
   @Override
@@ -87,7 +82,6 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     arguments.getComponent().setText(Strings.nullToEmpty(options.getArguments()));
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
     envVariables.setPassParentEnvs(options.getPassParentEnvParameters());
-    compileBeforeLaunch.getComponent().setSelected(options.getCompileBeforeLaunch());
   }
 
   @Override
@@ -100,7 +94,6 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     options.setArguments(arguments.getComponent().getText());
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());
-    options.setCompileBeforeLaunch(compileBeforeLaunch.getComponent().isSelected());
   }
 
   @NotNull
@@ -120,8 +113,6 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     panel.add(arguments);
     panel.add(Box.createVerticalStrut(gap));
     panel.add(envVariables);
-    panel.add(Box.createVerticalStrut(gap + 2));
-    panel.add(compileBeforeLaunch);
     return panel;
   }
 
@@ -141,7 +132,6 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     tasksHint.setAnchor(anchor);
     arguments.setAnchor(anchor);
     envVariables.setAnchor(anchor);
-    compileBeforeLaunch.setAnchor(anchor);
   }
 
 }
