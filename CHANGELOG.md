@@ -2,8 +2,9 @@
 
 ## [Unreleased]
 
-### Added
+## [1.3.0] - 2023-08-01
 
+### Added
 - Added support for custom quarkus goals (maven), profiles (maven) and tasks (gradle) in run configurations
 - Removed "compileBeforeLaunch" in run configurations, because it is more transparent to use the newly added custom settings
 
@@ -38,7 +39,8 @@
 ### Fixed
 - Removed unnecessary "ARTIFACT_RESOLVING" and "ARTIFACT_RESOLVED" logs from maven output
 
-[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.0...v1.1.1
