@@ -2,6 +2,8 @@
 
 ![build](https://github.com/conceptivesolutions/quarkus-intellij-plugin/workflows/build/badge.svg)
 ![version](https://img.shields.io/github/v/release/wglanzer/quarkus-intellij-plugin)
+![downloads](https://img.shields.io/jetbrains/plugin/d/14242-quarkus-run-configs)
+![rating](https://img.shields.io/jetbrains/plugin/r/rating/14242-quarkus-run-configs)
 
 <!-- Plugin description -->
 This plugin adds features to JetBrains IntelliJ IDEA to integrate [quarkus.io](https://quarkus.io) a lot better and make it behave like
