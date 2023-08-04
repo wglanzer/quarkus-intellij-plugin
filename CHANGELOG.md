@@ -2,8 +2,9 @@
 
 ## [Unreleased]
 
-### Fixed
+## [1.3.1] - 2023-08-04
 
+### Fixed
 - Configuration properties "Tasks", "Profiles" and "Goals" reset after IntelliJ restart (#9)
 - Configuration properties "Tasks", "Profiles" and "Goals" could not be stored in a project directory
 - Fixed exceptions on IntelliJ startup, caused by parsing the JDK in a run config editor
@@ -45,7 +46,9 @@
 ### Fixed
 - Removed unnecessary "ARTIFACT_RESOLVING" and "ARTIFACT_RESOLVED" logs from maven output
 
-[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.1...HEAD
+
+[1.3.1]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.1...v1.1.2
