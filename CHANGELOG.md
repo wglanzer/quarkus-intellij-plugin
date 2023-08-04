@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Configuration properties "Tasks", "Profiles" and "Goals" reset after IntelliJ restart (#9)
+- Configuration properties "Tasks", "Profiles" and "Goals" could not be stored in a project directory
+- Fixed exceptions on IntelliJ startup, caused by parsing the JDK in a run config editor
+
 ## [1.3.0] - 2023-08-01
 
 ### Added
