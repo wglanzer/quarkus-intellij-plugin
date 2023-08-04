@@ -2,10 +2,9 @@ package io.conceptive.quarkus.plugin.runconfig.options;
 
 import com.intellij.execution.configurations.RunConfigurationOptions;
 import com.intellij.openapi.components.StoredPropertyBase;
-import com.intellij.util.execution.ParametersListUtil;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * Serializable options for quarkus run configuration
@@ -107,33 +106,27 @@ public class MavenRunConfigurationOptions extends RunConfigurationOptions implem
     passParentEnvParameters.setValue(this, pPass);
   }
 
-  @NotNull
+  @Nullable
   @Override
-  public List<String> getGoals()
+  public String getGoals()
   {
-    String value = goals.getValue(this);
-    if(value == null)
-      return List.of();
-    return ParametersListUtil.parse(value);
+    return goals.getValue(this);
   }
 
-  public void setGoals(@Nullable List<String> pProfiles)
+  public void setGoals(@Nullable String pProfiles)
   {
-    goals.setValue(this, pProfiles == null ? null : ParametersListUtil.join(pProfiles));
+    goals.setValue(this, pProfiles);
   }
 
-  @NotNull
+  @Nullable
   @Override
-  public List<String> getProfiles()
+  public String getProfiles()
   {
-    String value = profiles.getValue(this);
-    if(value == null)
-      return List.of();
-    return ParametersListUtil.parse(value);
+    return profiles.getValue(this);
   }
 
-  public void setProfiles(@Nullable List<String> pProfiles)
+  public void setProfiles(@Nullable String pProfiles)
   {
-    profiles.setValue(this, pProfiles == null ? null : ParametersListUtil.join(pProfiles));
+    profiles.setValue(this, pProfiles);
   }
 }

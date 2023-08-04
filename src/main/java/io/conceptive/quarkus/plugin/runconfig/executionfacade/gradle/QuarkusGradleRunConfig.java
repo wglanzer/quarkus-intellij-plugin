@@ -9,6 +9,7 @@ import com.intellij.openapi.externalSystem.model.execution.ExternalSystemTaskExe
 import com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.*;
+import com.intellij.util.execution.ParametersListUtil;
 import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
 import io.conceptive.quarkus.plugin.runconfig.executionfacade.IInternalRunConfigs;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
@@ -111,7 +112,7 @@ class QuarkusGradleRunConfig extends GradleRunConfiguration implements IInternal
       if (env != null)
         settings.setEnv(env);
       settings.setPassParentEnvs(options.getPassParentEnvParameters());
-      settings.setTaskNames(options.getGoals());
+      settings.setTaskNames(ParametersListUtil.parse(Strings.nullToEmpty(options.getGoals())));
 
       // Set
       Field mySettings = ExternalSystemRunConfiguration.class.getDeclaredField("mySettings");

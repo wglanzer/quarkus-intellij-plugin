@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.*;
 import com.intellij.openapi.ui.*;
 import com.intellij.ui.*;
-import com.intellij.util.execution.ParametersListUtil;
 import com.intellij.util.ui.UIUtil;
 import io.conceptive.quarkus.plugin.runconfig.options.MavenRunConfigurationOptions;
 import org.jetbrains.annotations.*;
@@ -49,8 +48,8 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     MavenRunConfigurationOptions options = pImpl.getOptions();
     workingDirComponent.setValue(Strings.nullToEmpty(options.getWorkingDir()));
     vmOptions.getComponent().setText(Strings.nullToEmpty(options.getVmOptions()));
-    goals.getComponent().setText(ParametersListUtil.join(options.getGoals()));
-    profiles.getComponent().setText(ParametersListUtil.join(options.getProfiles()));
+    goals.getComponent().setText(options.getGoals());
+    profiles.getComponent().setText(options.getProfiles());
     if (options.getJreName() != null)
       jre.getComponent().setSelectedSdk(options.getJreName());
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
@@ -63,8 +62,8 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     MavenRunConfigurationOptions options = pImpl.getOptions();
     options.setWorkingDir(workingDirComponent.getValue());
     options.setVmOptions(vmOptions.getComponent().getText());
-    options.setGoals(ParametersListUtil.parse(goals.getComponent().getText()));
-    options.setProfiles(ParametersListUtil.parse(profiles.getComponent().getText()));
+    options.setGoals(goals.getComponent().getText());
+    options.setProfiles(profiles.getComponent().getText());
     options.setJreName(jre.getComponent().getSelectedSdk() != null ? jre.getComponent().getSelectedSdk().getName() : null);
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());

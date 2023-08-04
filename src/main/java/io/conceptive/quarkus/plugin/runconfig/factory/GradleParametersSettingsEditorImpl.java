@@ -10,7 +10,6 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.ui.*;
-import com.intellij.util.execution.ParametersListUtil;
 import com.intellij.util.ui.UIUtil;
 import io.conceptive.quarkus.plugin.runconfig.options.GradleRunConfigurationOptions;
 import org.jetbrains.annotations.*;
@@ -48,7 +47,7 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     GradleRunConfigurationOptions options = pImpl.getOptions();
     workingDirComponent.getComponent().setText(Strings.nullToEmpty(options.getWorkingDir()));
     vmOptions.getComponent().setText(Strings.nullToEmpty(options.getVmOptions()));
-    tasks.getComponent().setText(ParametersListUtil.join(options.getGoals()));
+    tasks.getComponent().setText(options.getGoals());
     arguments.getComponent().setText(Strings.nullToEmpty(options.getArguments()));
     envVariables.setEnvs(options.getEnvVariables() == null ? new HashMap<>() : options.getEnvVariables());
     envVariables.setPassParentEnvs(options.getPassParentEnvParameters());
@@ -60,7 +59,7 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     GradleRunConfigurationOptions options = pImpl.getOptions();
     options.setWorkingDir(workingDirComponent.getComponent().getText());
     options.setVmOptions(vmOptions.getComponent().getText());
-    options.setGoals(ParametersListUtil.parse(tasks.getComponent().getText()));
+    options.setGoals(tasks.getComponent().getText());
     options.setArguments(arguments.getComponent().getText());
     options.setEnvVariables(envVariables.getEnvs());
     options.setPassParentEnvParameters(envVariables.isPassParentEnvs());

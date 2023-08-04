@@ -1,10 +1,12 @@
 package io.conceptive.quarkus.plugin.runconfig.executionfacade.maven;
 
+import com.google.common.base.Strings;
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
+import com.intellij.util.execution.ParametersListUtil;
 import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
 import io.conceptive.quarkus.plugin.runconfig.executionfacade.IInternalRunConfigs;
 import io.conceptive.quarkus.plugin.runconfig.options.IQuarkusRunConfigurationOptions;
@@ -82,8 +84,8 @@ class QuarkusMavenRunConfig extends MavenRunConfiguration implements IInternalRu
   public JavaParameters createJavaParameters(@Nullable Project project) throws ExecutionException
   {
     MavenRunnerParameters params = new MavenRunnerParameters();
-    params.setGoals(options.getGoals());
-    params.setProfilesMap(options.getProfiles().stream()
+    params.setGoals(ParametersListUtil.parse(Strings.nullToEmpty(options.getGoals())));
+    params.setProfilesMap(ParametersListUtil.parse(Strings.nullToEmpty(options.getProfiles())).stream()
                               .collect(Collectors.toMap(pName -> pName, pName -> true)));
 
     String workingDir = options.getWorkingDir();
