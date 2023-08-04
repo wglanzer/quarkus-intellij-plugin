@@ -28,48 +28,18 @@ import java.util.HashMap;
 class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigImpl> implements PanelWithAnchor
 {
 
-  private final LabeledComponent<ExternalProjectPathField> workingDirComponent;
-  private final LabeledComponent<RawCommandLineEditor> vmOptions;
-  private final LabeledComponent<RawCommandLineEditor> tasks;
-  private final LabeledComponent<SimpleColoredComponent> tasksHint;
-  private final LabeledComponent<RawCommandLineEditor> arguments;
-  private final EnvironmentVariablesComponent envVariables;
+  private final Project project;
+  private LabeledComponent<ExternalProjectPathField> workingDirComponent;
+  private LabeledComponent<RawCommandLineEditor> vmOptions;
+  private LabeledComponent<RawCommandLineEditor> tasks;
+  private LabeledComponent<SimpleColoredComponent> tasksHint;
+  private LabeledComponent<RawCommandLineEditor> arguments;
+  private EnvironmentVariablesComponent envVariables;
   private JComponent myAnchor;
 
   public GradleParametersSettingsEditorImpl(@NotNull Project pProject)
   {
-    ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
-    FileChooserDescriptor projectPathChooserDescriptor = null;
-    if (manager instanceof ExternalSystemUiAware)
-      projectPathChooserDescriptor = ((ExternalSystemUiAware) manager).getExternalProjectConfigDescriptor();
-    if (projectPathChooserDescriptor == null)
-      projectPathChooserDescriptor = FileChooserDescriptorFactory.createSingleLocalFileDescriptor();
-
-    workingDirComponent = new LabeledComponent<>();
-    workingDirComponent.setLabelLocation(BorderLayout.WEST);
-    workingDirComponent.setText("Gradle Project");
-    workingDirComponent.setComponent(new ExternalProjectPathField(pProject, GradleConstants.SYSTEM_ID, projectPathChooserDescriptor,
-                                                                  ExternalSystemBundle.message("settings.label.select.project", GradleConstants.SYSTEM_ID.getReadableName())));
-    vmOptions = new LabeledComponent<>();
-    vmOptions.setComponent(new RawCommandLineEditor());
-    vmOptions.setLabelLocation(BorderLayout.WEST);
-    vmOptions.setText("VM Options");
-    tasks = new LabeledComponent<>();
-    tasks.setComponent(new RawCommandLineEditor());
-    tasks.setLabelLocation(BorderLayout.WEST);
-    tasks.setText("Tasks");
-    tasksHint = new LabeledComponent<>();
-    tasksHint.setLabelLocation(BorderLayout.WEST);
-    tasksHint.setComponent(new SimpleColoredComponent());
-    tasksHint.getComponent().append("Separate gradle tasks with spaces. Default: \"clean assemble quarkusDev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
-    arguments = new LabeledComponent<>();
-    arguments.setComponent(new RawCommandLineEditor());
-    arguments.setLabelLocation(BorderLayout.WEST);
-    arguments.setText("Arguments");
-    envVariables = new EnvironmentVariablesComponent();
-    envVariables.setText("Environment Variables");
-    envVariables.setLabelLocation(BorderLayout.WEST);
-    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, tasks, tasksHint, arguments, envVariables);
+    project = pProject;
   }
 
   @Override
@@ -100,6 +70,10 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
   @Override
   protected JComponent createEditor()
   {
+    // create all components first
+    createComponents();
+
+    // create a panel, containing all components
     int gap = 5;
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -132,6 +106,42 @@ class GradleParametersSettingsEditorImpl extends SettingsEditor<GradleRunConfigI
     tasksHint.setAnchor(anchor);
     arguments.setAnchor(anchor);
     envVariables.setAnchor(anchor);
+  }
+
+  private void createComponents()
+  {
+    ExternalSystemManager<?, ?, ?, ?, ?> manager = ExternalSystemApiUtil.getManager(GradleConstants.SYSTEM_ID);
+    FileChooserDescriptor projectPathChooserDescriptor = null;
+    if (manager instanceof ExternalSystemUiAware)
+      projectPathChooserDescriptor = ((ExternalSystemUiAware) manager).getExternalProjectConfigDescriptor();
+    if (projectPathChooserDescriptor == null)
+      projectPathChooserDescriptor = FileChooserDescriptorFactory.createSingleLocalFileDescriptor();
+
+    workingDirComponent = new LabeledComponent<>();
+    workingDirComponent.setLabelLocation(BorderLayout.WEST);
+    workingDirComponent.setText("Gradle Project");
+    workingDirComponent.setComponent(new ExternalProjectPathField(project, GradleConstants.SYSTEM_ID, projectPathChooserDescriptor,
+                                                                  ExternalSystemBundle.message("settings.label.select.project", GradleConstants.SYSTEM_ID.getReadableName())));
+    vmOptions = new LabeledComponent<>();
+    vmOptions.setComponent(new RawCommandLineEditor());
+    vmOptions.setLabelLocation(BorderLayout.WEST);
+    vmOptions.setText("VM Options");
+    tasks = new LabeledComponent<>();
+    tasks.setComponent(new RawCommandLineEditor());
+    tasks.setLabelLocation(BorderLayout.WEST);
+    tasks.setText("Tasks");
+    tasksHint = new LabeledComponent<>();
+    tasksHint.setLabelLocation(BorderLayout.WEST);
+    tasksHint.setComponent(new SimpleColoredComponent());
+    tasksHint.getComponent().append("Separate gradle tasks with spaces. Default: \"clean assemble quarkusDev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
+    arguments = new LabeledComponent<>();
+    arguments.setComponent(new RawCommandLineEditor());
+    arguments.setLabelLocation(BorderLayout.WEST);
+    arguments.setText("Arguments");
+    envVariables = new EnvironmentVariablesComponent();
+    envVariables.setText("Environment Variables");
+    envVariables.setLabelLocation(BorderLayout.WEST);
+    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, tasks, tasksHint, arguments, envVariables);
   }
 
 }

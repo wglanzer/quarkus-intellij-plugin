@@ -27,47 +27,20 @@ import java.util.HashMap;
 class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImpl> implements PanelWithAnchor
 {
 
-  private final _WorkingDirectoryComponent workingDirComponent;
-  private final LabeledComponent<RawCommandLineEditor> vmOptions;
-  private final LabeledComponent<RawCommandLineEditor> goals;
-  private final LabeledComponent<SimpleColoredComponent> goalsHint;
-  private final LabeledComponent<RawCommandLineEditor> profiles;
-  private final LabeledComponent<SimpleColoredComponent> profilesHint;
-  private final LabeledComponent<SdkComboBox> jre;
-  private final EnvironmentVariablesComponent envVariables;
+  private final Project project;
+  private _WorkingDirectoryComponent workingDirComponent;
+  private LabeledComponent<RawCommandLineEditor> vmOptions;
+  private LabeledComponent<RawCommandLineEditor> goals;
+  private LabeledComponent<SimpleColoredComponent> goalsHint;
+  private LabeledComponent<RawCommandLineEditor> profiles;
+  private LabeledComponent<SimpleColoredComponent> profilesHint;
+  private LabeledComponent<SdkComboBox> jre;
+  private EnvironmentVariablesComponent envVariables;
   private JComponent myAnchor;
 
   public MavenParametersSettingsEditorImpl(@NotNull Project pProject)
   {
-    workingDirComponent = new _WorkingDirectoryComponent(pProject);
-    vmOptions = new LabeledComponent<>();
-    vmOptions.setComponent(new RawCommandLineEditor());
-    vmOptions.setLabelLocation(BorderLayout.WEST);
-    vmOptions.setText("VM Options");
-    goals = new LabeledComponent<>();
-    goals.setComponent(new RawCommandLineEditor());
-    goals.setLabelLocation(BorderLayout.WEST);
-    goals.setText("Goals");
-    goalsHint = new LabeledComponent<>();
-    goalsHint.setLabelLocation(BorderLayout.WEST);
-    goalsHint.setComponent(new SimpleColoredComponent());
-    goalsHint.getComponent().append("Separate maven goals with spaces. Default: \"clean compile quarkus:dev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
-    profiles = new LabeledComponent<>();
-    profiles.setComponent(new RawCommandLineEditor());
-    profiles.setLabelLocation(BorderLayout.WEST);
-    profiles.setText("Profiles");
-    profilesHint = new LabeledComponent<>();
-    profilesHint.setLabelLocation(BorderLayout.WEST);
-    profilesHint.setComponent(new SimpleColoredComponent());
-    profilesHint.getComponent().append("Separate maven profiles with spaces", SimpleTextAttributes.GRAYED_ATTRIBUTES);
-    jre = new LabeledComponent<>();
-    jre.setComponent(new SdkComboBox(SdkComboBoxModel.createProjectJdkComboBoxModel(pProject, this)));
-    jre.setLabelLocation(BorderLayout.WEST);
-    jre.setText("JRE");
-    envVariables = new EnvironmentVariablesComponent();
-    envVariables.setText("Environment Variables");
-    envVariables.setLabelLocation(BorderLayout.WEST);
-    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, goals, goalsHint, profiles, profilesHint, jre, envVariables);
+    project = pProject;
   }
 
   @Override
@@ -101,6 +74,10 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
   @Override
   protected JComponent createEditor()
   {
+    // create all components first
+    createComponents();
+
+    // create a panel, containing all components
     int gap = 5;
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -138,6 +115,39 @@ class MavenParametersSettingsEditorImpl extends SettingsEditor<MavenRunConfigImp
     profilesHint.setAnchor(anchor);
     jre.setAnchor(anchor);
     envVariables.setAnchor(anchor);
+  }
+
+  private void createComponents()
+  {
+    workingDirComponent = new _WorkingDirectoryComponent(project);
+    vmOptions = new LabeledComponent<>();
+    vmOptions.setComponent(new RawCommandLineEditor());
+    vmOptions.setLabelLocation(BorderLayout.WEST);
+    vmOptions.setText("VM Options");
+    goals = new LabeledComponent<>();
+    goals.setComponent(new RawCommandLineEditor());
+    goals.setLabelLocation(BorderLayout.WEST);
+    goals.setText("Goals");
+    goalsHint = new LabeledComponent<>();
+    goalsHint.setLabelLocation(BorderLayout.WEST);
+    goalsHint.setComponent(new SimpleColoredComponent());
+    goalsHint.getComponent().append("Separate maven goals with spaces. Default: \"clean compile quarkus:dev\"", SimpleTextAttributes.GRAYED_ATTRIBUTES);
+    profiles = new LabeledComponent<>();
+    profiles.setComponent(new RawCommandLineEditor());
+    profiles.setLabelLocation(BorderLayout.WEST);
+    profiles.setText("Profiles");
+    profilesHint = new LabeledComponent<>();
+    profilesHint.setLabelLocation(BorderLayout.WEST);
+    profilesHint.setComponent(new SimpleColoredComponent());
+    profilesHint.getComponent().append("Separate maven profiles with spaces", SimpleTextAttributes.GRAYED_ATTRIBUTES);
+    jre = new LabeledComponent<>();
+    jre.setComponent(new SdkComboBox(SdkComboBoxModel.createProjectJdkComboBoxModel(project, this)));
+    jre.setLabelLocation(BorderLayout.WEST);
+    jre.setText("JRE");
+    envVariables = new EnvironmentVariablesComponent();
+    envVariables.setText("Environment Variables");
+    envVariables.setLabelLocation(BorderLayout.WEST);
+    myAnchor = UIUtil.mergeComponentsWithAnchor(workingDirComponent, vmOptions, goals, goalsHint, profiles, profilesHint, jre, envVariables);
   }
 
   /**
