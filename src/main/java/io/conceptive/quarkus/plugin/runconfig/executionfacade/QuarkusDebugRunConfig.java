@@ -11,7 +11,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import io.conceptive.quarkus.plugin.runconfig.IQuarkusRunConfigType;
 import io.conceptive.quarkus.plugin.util.QuarkusUtility;
-import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 import org.jetbrains.annotations.*;
 
@@ -156,7 +155,7 @@ class QuarkusDebugRunConfig extends RemoteConfiguration implements IInternalRunC
             text = QuarkusUtility.getTextAfterDebugReadyString(text);
 
             // remove "first" linebreak
-            if (StringUtils.isBlank(text))
+            if (text.isBlank())
               text = null;
           }
 
