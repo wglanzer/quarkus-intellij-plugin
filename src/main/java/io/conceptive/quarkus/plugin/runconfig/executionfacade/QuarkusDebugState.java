@@ -3,7 +3,8 @@ package io.conceptive.quarkus.plugin.runconfig.executionfacade;
 import com.intellij.debugger.DebuggerManager;
 import com.intellij.debugger.engine.*;
 import com.intellij.execution.*;
-import com.intellij.execution.configurations.RemoteConnection;
+import com.intellij.execution.configurations.*;
+import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.execution.process.*;
 import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.openapi.application.ApplicationManager;
@@ -18,9 +19,11 @@ import java.util.function.Supplier;
 /**
  * @author w.glanzer, 21.04.2020
  */
-class QuarkusDebugState extends RemoteStateState
+class QuarkusDebugState implements RemoteState
 {
   private final Project project;
+  private final RemoteConnection remoteConnection;
+  private final boolean restart;
   private final ProcessHandler buildProcessHandler;
   private final Supplier<List<Map.Entry<String, Key<?>>>> previousMessageSupplier;
   private final List<Runnable> invalidationRunnables = new ArrayList<>();
@@ -28,23 +31,34 @@ class QuarkusDebugState extends RemoteStateState
   public QuarkusDebugState(@NotNull Project pProject, @NotNull RemoteConnection pConnection, boolean pRestart,
                            @NotNull ProcessHandler pBuildProcessHandler, @Nullable Supplier<List<Map.Entry<String, Key<?>>>> pPreviousMessageSupplier)
   {
-    super(pProject, pConnection, pRestart);
     project = pProject;
+    remoteConnection = pConnection;
+    restart = pRestart;
     buildProcessHandler = pBuildProcessHandler;
     previousMessageSupplier = pPreviousMessageSupplier;
   }
 
   @Override
-  public ExecutionResult execute(Executor executor, @NotNull ProgramRunner runner) throws ExecutionException
+  public ExecutionResult execute(Executor executor, @NotNull ProgramRunner runner)
   {
-    ExecutionResult execute = super.execute(executor, runner);
-    if (execute == null)
-      return null;
+    // Create the default ExecutionResult, so we can connect to the remote debug state
+    ConsoleViewImpl consoleView = new ConsoleViewImpl(project, false);
+    RemoteDebugProcessHandler process = new RemoteDebugProcessHandler(project, restart);
+    consoleView.attachToProcess(process);
+    ExecutionResult execute = new DefaultExecutionResult(consoleView, process);
+
+    // Add the processListener to the debug handler
     ProcessHandler debugHandler = execute.getProcessHandler();
-    if (debugHandler != null && buildProcessHandler != null)
+    if (debugHandler != null)
       debugHandler.addProcessListener(new _ReadinessProcessListener(project, debugHandler, () -> _onProcessHandlerCreated(buildProcessHandler, debugHandler), invalidationRunnables));
 
     return execute;
+  }
+
+  @Override
+  public RemoteConnection getRemoteConnection()
+  {
+    return remoteConnection;
   }
 
   /**
