@@ -2,8 +2,9 @@
 
 ## [Unreleased]
 
-### Added
+## [1.3.2] - 2024-03-29
 
+### Added
 - User inputs in console of debug view should be propagated to build process, in order to enable e.g. "s" or "q" commands to work correctly
 
 ## [1.3.1] - 2023-08-04
@@ -50,8 +51,9 @@
 ### Fixed
 - Removed unnecessary "ARTIFACT_RESOLVING" and "ARTIFACT_RESOLVED" logs from maven output
 
-[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.2...HEAD
 
+[1.3.2]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/conceptivesolutions/quarkus-intellij-plugin/compare/v1.1.2...v1.2.0
