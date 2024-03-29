@@ -13,6 +13,7 @@ import com.intellij.openapi.util.Key;
 import io.conceptive.quarkus.plugin.util.ForwardProcessListener;
 import org.jetbrains.annotations.*;
 
+import java.io.OutputStream;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -43,7 +44,7 @@ class QuarkusDebugState implements RemoteState
   {
     // Create the default ExecutionResult, so we can connect to the remote debug state
     ConsoleViewImpl consoleView = new ConsoleViewImpl(project, false);
-    RemoteDebugProcessHandler process = new RemoteDebugProcessHandler(project, restart);
+    RemoteDebugProcessHandler process = new QuarkusDebugProcessHandler(project, restart, buildProcessHandler);
     consoleView.attachToProcess(process);
     ExecutionResult execute = new DefaultExecutionResult(consoleView, process);
 
@@ -84,6 +85,28 @@ class QuarkusDebugState implements RemoteState
     ForwardProcessListener debugProcessListener = new ForwardProcessListener(pBuildProcessHandle, false);
     pDebugProcessHandler.addProcessListener(debugProcessListener);
     invalidationRunnables.add(() -> pDebugProcessHandler.removeProcessListener(debugProcessListener));
+  }
+
+  /**
+   * ProcessHandler, that delegates its input to the outter build process handler
+   */
+  private static class QuarkusDebugProcessHandler extends RemoteDebugProcessHandler
+  {
+    private final ProcessHandler buildProcHandler;
+
+    public QuarkusDebugProcessHandler(@NotNull Project project, boolean autoRestart, @Nullable ProcessHandler pBuildProcessHandler)
+    {
+      super(project, autoRestart);
+      buildProcHandler = pBuildProcessHandler;
+    }
+
+    @Override
+    public OutputStream getProcessInput()
+    {
+      if (buildProcHandler == null)
+        return super.getProcessInput();
+      return buildProcHandler.getProcessInput();
+    }
   }
 
   /**

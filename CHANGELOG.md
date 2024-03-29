@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- User inputs in console of debug view should be propagated to build process, in order to enable e.g. "s" or "q" commands to work correctly
+
 ## [1.3.1] - 2023-08-04
 
 ### Fixed
