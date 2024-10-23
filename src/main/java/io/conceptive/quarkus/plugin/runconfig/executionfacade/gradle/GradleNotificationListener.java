@@ -25,6 +25,11 @@ public class GradleNotificationListener extends ExternalSystemTaskNotificationLi
         .addNotificationListener(new GradleNotificationListener());
   }
 
+  public GradleNotificationListener()
+  {
+    super(null);
+  }
+
   @Override
   public void onTaskOutput(@NotNull ExternalSystemTaskId id, @NotNull String text, boolean stdOut)
   {

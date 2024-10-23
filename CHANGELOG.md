@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Refactored GradleNotificationListener to stabilize support for IntelliJ 2024.2+
+
 ## [1.3.2] - 2024-03-29
 
 ### Added
